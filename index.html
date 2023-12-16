@@ -11,9 +11,10 @@
 </head>
 
 <body>
+    <script src="js/service.js"></script>
     <script src="js/game.js"></script>
 
-    <div class="container">
+    <div class="container" id="main">
         <header>
             <div id="header-te-logo">
                 <img src="images/te.png" id="te-logo" />
@@ -76,11 +77,6 @@
         <main>
             <div class="game">
                 <table id="game-table">
-                    <div class="game-over-popup" id="gameOver">
-                        <p id="gameOverText"></p>
-                        <button type="button" class="play-again" onclick="endGame()">Play Again</button>
-                    </div>
-
                    <!-- generate table here -->
                 </table>
 
@@ -145,6 +141,10 @@
             &copy; TechElevator TErdle
             <img src="images/wordle-icon.png" id="footer-logo" />
         </footer>
+    </div>
+    <div class="game-over-popup" id="gameOver">
+        <p id="gameOverText"></p>
+        <button type="button" class="play-again" onclick="endGame()">Play Again</button>
     </div>
 </body>
 

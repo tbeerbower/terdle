@@ -1,90 +1,101 @@
-//const baseUrl = 'https://terdle-server.fly.dev'
-const baseUrl = 'http://localhost:9000'
+// constants 
+const baseUrl = 'https://terdle-server.fly.dev'
+//const baseUrl = 'http://localhost:9000'
+const MAX_ROWS = 6;
+const NUMB_LETTERS = 5;
 
+// game-related variables
+let game = {
+    currentGuess: { row: 0, col: 0 },
+    isLoggedIn: false,
+    currentGame: null,
+};
 
-let currentGuessRow = 0;
-let currentGuessCol = 0;
-let isLoggedIn = false;
-let currentGame = null; 
+function initializeGame() {
+    document.addEventListener('DOMContentLoaded', handleDOMContentLoaded);
+}
 
-document.addEventListener('DOMContentLoaded', (event) => {
-
-
-    initGameBoard()
-
-    var user = JSON.parse(localStorage.getItem('user'));
-    if (user != null) {
+function restoreUserSession() {
+    // Extract repeated logic into functions
+    const user = getUserFromLocalStorage();
+    if (user) {
         loggedIn(user);
         getGame();
     }
+}
 
-    document.addEventListener('keydown', logKey);
-    function logKey(e) {
+function getUserFromLocalStorage() {
+    return JSON.parse(localStorage.getItem('user'));
+}
 
-        console.log(`key code is ${e.key}`);
+function handleDOMContentLoaded() {
+    initGameBoard();
+    restoreUserSession();
+    document.addEventListener('keydown', handleKeyDown);
+}
 
-        if (isLoggedIn) {
-            let key = e.key
+function handleKeyDown(e) {
+    console.log(`key code is ${e.key}`);
 
-            unselectGuess();
-            if (key.length === 1 && key.match(/[a-zA-Z]/i)) {
-                let guessId = `guess${currentGuessRow}${currentGuessCol}`
-                console.log(`guessId is ${guessId}`);
+    if (game.isLoggedIn) {
+        let key = e.key
 
-                document.getElementById(guessId).textContent = key.toUpperCase();
-                if (currentGuessCol < 4) {
-                    currentGuessCol++
-                }
-            } else if (key == "Backspace") {
-                let guessId = `guess${currentGuessRow}${currentGuessCol}`
-                let guessElement = document.getElementById(guessId)
-                guessElement.innerHTML = '&nbsp'
-                if (currentGuessCol > 0) {
-                    currentGuessCol--
-                }
-            } else if (key == "ArrowLeft") {
-                if (currentGuessCol > 0) {
-                    currentGuessCol--
-                }
-            } else if (key == "ArrowRight") {
-                if (currentGuessCol < 4) {
-                    let guessId = `guess${currentGuessRow}${currentGuessCol}`
-                    let guessElement = document.getElementById(guessId)
-                    if (guessElement.textContent.length === 1 && guessElement.textContent.match(/[a-zA-Z]/i)) {
-                        currentGuessCol++
-                    }
-                }
-            } else if (key == "Enter") {
-                let guess = ''
-                let complete = true;
-                for (let i = 0; i < 5; i++) {
-                    let guessId = `guess${currentGuessRow}${i}`
-                    let guessElement = document.getElementById(guessId)
-                    guess = guess + guessElement.textContent
+        unselectGuess();
+        if (key.length === 1 && key.match(/[a-zA-Z]/i)) {
+            let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
+            console.log(`guessId is ${guessId}`);
 
-                    if (guessElement.textContent.length != 1 || !guessElement.textContent.match(/[a-zA-Z]/i)) {
-                        complete = false
-                    }
-
-                //  console.log(guessElement)
-                }
-                if (complete) {
-
-                    updateGame(guess);
-
-                    if (currentGuessRow < 5) {
-
-                        currentGuessRow++
-                        currentGuessCol = 0
-                    }
-                }
-              
-                console.log("Guess=" + guess);
+            document.getElementById(guessId).textContent = key.toUpperCase();
+            if (game.currentGuess.col < 4) {
+                game.currentGuess.col++
             }
-            selectGuess();
+        } else if (key == "Backspace") {
+            let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
+            let guessElement = document.getElementById(guessId)
+            guessElement.innerHTML = '&nbsp'
+            if (game.currentGuess.col > 0) {
+                game.currentGuess.col--
+            }
+        } else if (key == "ArrowLeft") {
+            if (game.currentGuess.col > 0) {
+                game.currentGuess.col--
+            }
+        } else if (key == "ArrowRight") {
+            if (game.currentGuess.col < 4) {
+                let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
+                let guessElement = document.getElementById(guessId)
+                if (guessElement.textContent.length === 1 && guessElement.textContent.match(/[a-zA-Z]/i)) {
+                    game.currentGuess.col++
+                }
+            }
+        } else if (key == "Enter") {
+            let guess = ''
+            let complete = true;
+            for (let i = 0; i < NUMB_LETTERS; i++) {
+                let guessId = `guess${game.currentGuess.row}${i}`
+                let guessElement = document.getElementById(guessId)
+                guess = guess + guessElement.textContent
+
+                if (guessElement.textContent.length != 1 || !guessElement.textContent.match(/[a-zA-Z]/i)) {
+                    complete = false
+                }
+
+            //  console.log(guessElement)
+            }
+            if (complete) {
+
+                updateGame(guess);
+
+                if (game.currentGuess.row < MAX_ROWS - 1) {
+                    game.currentGuess.row++
+                    game.currentGuess.col = 0
+                }
+            }
+            console.log("Guess=" + guess);
         }
+        selectGuess();
     }
-});
+}
 
 function initGameBoard() {
 
@@ -92,13 +103,13 @@ function initGameBoard() {
 
     let gameTableElement = document.getElementById('game-table')
 
-    for (let r = 0; r < 6; r++) {
+    for (let r = 0; r < MAX_ROWS; r++) {
 
         let rowElement = document.createElement('tr');
      //   rowElement.classList.add('elementToFadeInAndOut')
 
 
-        for (let c = 0; c < 5; c++) {
+        for (let c = 0; c < NUMB_LETTERS; c++) {
            let guessElement = document.createElement('td');
 
            let guessId = `guess${r}${c}`
@@ -162,7 +173,7 @@ function updateGame(guessValue) {
         var userId = user.id;
         var gameId = localStorage.getItem('gameId');
 
-        let previousGuesses = currentGame.guesses;
+        let previousGuesses = game.currentGame.guesses;
         if (!previousGuesses) {
             previousGuesses = []
         }
@@ -173,25 +184,23 @@ function updateGame(guessValue) {
             guesses: previousGuesses
         };
 
-        fetch(`${baseUrl}/users/${userId}/games/${gameId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+        callApi(`${baseUrl}/users/${userId}/games/${gameId}`, 
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(guessData),
             },
-            body: JSON.stringify(guessData),
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+            () => {
+                  getGame();
+            },
+            (error) => {
+                console.error('There was a problem:', error.message);    
+                getGame();
             }
-            getGame();
-        })
-        .catch(error => {
-            // Handle errors during game update
-            console.error('There was a problem updating the game:', error.message);
-            getGame();
-        }); 
+        );
     }
 }
 
@@ -204,55 +213,47 @@ function getGame() {
         var gameId = localStorage.getItem('gameId');
 
         if (gameId) {
-            fetch(`${baseUrl}/users/${userId}/games/${gameId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                currentGame = data;
-                console.log(`got current game ${currentGame.gameId}`)
-                fillInGameTable();
 
-                if (currentGame.guesses.length >= 6 || currentGame.success ) {
-                    document.getElementById("gameOver").style.display = "block";
-                    if (currentGame.success) {
-                        document.getElementById("gameOverText").textContent = `You solved it in ${currentGame.guesses.length} tries!`;
-                    } else {
-                        document.getElementById("gameOverText").textContent = `Sorry you didn't win.  The word is ${currentGame.word}.`;
+            callApi(`${baseUrl}/users/${userId}/games/${gameId}`, 
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
                     }
-                    
-                }
+                },
+                (data) => {
+                    game.currentGame = data;
+                    console.log(`got current game ${game.currentGame.gameId}`)
+                    fillInGameTable();
 
-            })
-            .catch(error => {
-                // Handle errors during game creation
-                console.error('There was a problem getting the game:', error.message);
-            }); 
+                    if (game.currentGame.guesses.length >= MAX_ROWS || game.currentGame.success ) {
+                        document.getElementById("gameOver").style.display = "flex";
+                        if (game.currentGame.success) {
+                            document.getElementById("gameOverText").innerHTML = `You solved it in ${game.currentGame.guesses.length} tries!`;
+                        } else {
+                            document.getElementById("gameOverText").innerHTML = `Sorry, you didn't win.<br>  The word is ${game.currentGame.word}.`;
+                        }
+                        document.getElementById("main").style.filter = "blur(2px)";
+                    }
+
+                }
+            );
         }
     }
 }
 
 function fillInGameTable() {
     unselectGuess();
-    if (currentGame) {
-        let game = currentGame;
-        let matches = game.matches;
+    if (game.currentGame) {
+        let matches = game.currentGame.matches;
 
         console.log(`matches = ${matches}`)
         if (matches) {
 
 
             for (let i = 0; i < matches.length; ++i) {
-                for (let j = 0; j < 5; ++j) {
+                for (let j = 0; j < NUMB_LETTERS; ++j) {
         
                     let guessId = `guess${i}${j}`
                     let guessElement = document.getElementById(guessId)
@@ -270,17 +271,17 @@ function fillInGameTable() {
                 }
             }
 
-            currentGuessRow = matches.length;
-            if (currentGuessRow > 5) {
-                currentGuessRow = 5;
+            game.currentGuess.row = matches.length;
+            if (game.currentGuess.row >= MAX_ROWS) {
+                game.currentGuess.row = MAX_ROWS - 1;
             }
-            currentGuessCol = 0;
+            game.currentGuess.col = 0;
 
-            console.log(`fill in row ${currentGuessRow} col ${currentGuessCol}`)
+            console.log(`fill in row ${game.currentGuess.row} col ${game.currentGuess.col}`)
         }
     } else {
-        for (let i = 0; i < 6; ++i) {
-            for (let j = 0; j < 5; ++j) {
+        for (let i = 0; i < MAX_ROWS; ++i) {
+            for (let j = 0; j < NUMB_LETTERS; ++j) {
     
                 let guessId = `guess${i}${j}`
                 let guessElement = document.getElementById(guessId)
@@ -290,8 +291,8 @@ function fillInGameTable() {
                 guessElement.classList.add("no-match")
             }
         }
-        currentGuessRow = 0;
-        currentGuessCol = 0;
+        game.currentGuess.row = 0;
+        game.currentGuess.col = 0;
 
     }  
     selectGuess();
@@ -299,16 +300,16 @@ function fillInGameTable() {
 
 
 function selectGuess() {
-    let guessId = `guess${currentGuessRow}${currentGuessCol}`
+    let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
 
-    console.log(`selecting guess${currentGuessRow}${currentGuessCol}`)
+    console.log(`selecting guess${game.currentGuess.row}${game.currentGuess.col}`)
 
     let guessElement = document.getElementById(guessId)
     guessElement.classList.add("selected") 
 }
 
 function unselectGuess() {
-    let guessId = `guess${currentGuessRow}${currentGuessCol}`
+    let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
     let guessElement = document.getElementById(guessId)
     guessElement.classList.remove("selected") 
 }
@@ -326,43 +327,30 @@ function login() {
     document.getElementById("login-wait").style.display = "flex";
     document.getElementById("login-status").style.display = "none";
 
-    fetch(`${baseUrl}/login`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
+    callApi( `${baseUrl}/login`, 
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(loginData),
         },
-        body: JSON.stringify(loginData),
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+        (data) => {
+            const token = data.token;
+            const user = data.user;
+
+            // Save the user ID and token to localStorage for later use
+            localStorage.setItem('user',JSON.stringify(user));
+            localStorage.setItem('token', token);
+
+            loggedIn(user);
+            startGame();
         }
-        return response.json();
-    })
-    .then(data => {
-        // Handle successful login response
-        console.log('Login successful', data);
-
-        // Assuming you want to extract the token and user details
-        const token = data.token;
-        const user = data.user;
-
-        // Save the user ID and token to localStorage for later use
-        localStorage.setItem('user',JSON.stringify(user));
-        localStorage.setItem('token', token);
-
-        loggedIn(user);
-        startGame();
-
-    })
-    .catch(error => {
-        // Handle errors during login
-        console.error('There was a problem with the login:', error.message);
-    });
+    );
 }
 
 function loggedIn(user) {
-    isLoggedIn = true;
+    game.isLoggedIn = true;
     document.getElementById("login-form").style.display = "none";
     document.getElementById("login-wait").style.display = "none";
     document.getElementById("login-status").style.display = "flex";
@@ -380,13 +368,22 @@ function logout() {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     localStorage.removeItem('game');
-    isLoggedIn = false;
+    game.isLoggedIn = false;
 }
 
 function endGame() {
     document.getElementById("gameOver").style.display = "none";
-    currentGame = null
+    document.getElementById("main").style.filter = "none";
+    game.currentGame = null
     localStorage.removeItem('gameId');
     fillInGameTable();
     startGame();
 }
+
+function logError(error) {
+    console.error('There was a problem:', error.message);    
+}
+
+
+// Call the initializeGame function to start the application
+initializeGame();
