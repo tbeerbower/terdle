@@ -1,6 +1,6 @@
 // constants 
-//const baseUrl = 'https://terdle-server.fly.dev'
-const baseUrl = 'http://localhost:9000'
+const baseUrl = 'https://terdle-server.fly.dev'
+//const baseUrl = 'http://localhost:9000'
 const MAX_ROWS = 6;
 const NUMB_LETTERS = 5;
 
