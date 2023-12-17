@@ -125,12 +125,13 @@ footer {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content:center;
     margin-bottom: 2px;
 }
 
 .login-input {
 
-    width: 10em;
+    width: 30%;
     margin: 2px;
     padding: 2px;
     border: 1px solid black;
@@ -259,6 +260,7 @@ nav ul {
     color: black;
     text-align: center;
     width: 1em;
+    caret-color: transparent;
 } 
 
 .selected {

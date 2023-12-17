@@ -45,14 +45,15 @@ function handleKeyDown(e) {
             let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
             console.log(`guessId is ${guessId}`);
 
-            document.getElementById(guessId).textContent = key.toUpperCase();
+        //    document.getElementById(guessId).textContent = key.toUpperCase();
+            document.getElementById(guessId).value = key.toUpperCase();
             if (game.currentGuess.col < 4) {
                 game.currentGuess.col++
             }
         } else if (key == "Backspace") {
             let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
             let guessElement = document.getElementById(guessId)
-            guessElement.innerHTML = '&nbsp'
+            guessElement.value = ''
             if (game.currentGuess.col > 0) {
                 game.currentGuess.col--
             }
@@ -64,7 +65,7 @@ function handleKeyDown(e) {
             if (game.currentGuess.col < 4) {
                 let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
                 let guessElement = document.getElementById(guessId)
-                if (guessElement.textContent.length === 1 && guessElement.textContent.match(/[a-zA-Z]/i)) {
+                if (guessElement.value.match(/[a-zA-Z]/i)) {
                     game.currentGuess.col++
                 }
             }
@@ -74,9 +75,9 @@ function handleKeyDown(e) {
             for (let i = 0; i < NUMB_LETTERS; i++) {
                 let guessId = `guess${game.currentGuess.row}${i}`
                 let guessElement = document.getElementById(guessId)
-                guess = guess + guessElement.textContent
+                guess = guess + guessElement.value
 
-                if (guessElement.textContent.length != 1 || !guessElement.textContent.match(/[a-zA-Z]/i)) {
+                if (!guessElement.value.match(/[a-zA-Z]/i)) {
                     complete = false
                 }
 
@@ -110,16 +111,23 @@ function initGameBoard() {
 
 
         for (let c = 0; c < NUMB_LETTERS; c++) {
-           let guessElement = document.createElement('td');
+           let columnElement = document.createElement('td');
+           rowElement.appendChild(columnElement);
+
+           let guessElement = document.createElement('input');
 
            let guessId = `guess${r}${c}`
 
            guessElement.id = guessId
            guessElement.classList.add('no-match')
            guessElement.classList.add('guess-letter')
-           guessElement.innerHTML = '&nbsp'
+           //guessElement.innerHTML = '&nbsp'
+           guessElement.type = "text";
+           guessElement.inputmode = "text";
+           guessElement.maxLength = 1;
+           guessElement.readOnly = true;
 
-           rowElement.appendChild(guessElement);
+           columnElement.appendChild(guessElement);
         }
         gameTableElement.appendChild(rowElement);
     }
@@ -306,6 +314,7 @@ function selectGuess() {
 
     let guessElement = document.getElementById(guessId)
     guessElement.classList.add("selected") 
+    guessElement.focus();
 }
 
 function unselectGuess() {
