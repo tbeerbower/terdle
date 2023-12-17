@@ -84,39 +84,6 @@ footer {
     gap: 5px;
 }
 
-@media screen and (max-width: 768px) {
-    .container {
-        grid-template-areas:
-            "header"
-            "rules"
-            "main"
-            "leaders"
-            "footer";
-        grid-template-columns: 1fr;
-    }
-
-    #leaders{
-        flex-direction: column;
-        align-items: center;
-        align-content: center;
-
-    }
-
-    header {
-        flex-direction: column;
-    }
-
-    #header-main {
-        grid-template-columns: 1fr;
-    
-        grid-template-areas:
-            "logo"
-            "turtle"
-            "nav"
-            "form"
-        ;
-    }
-}
 
 
 /***** enter grid and flexbox CSS above this line *****/
@@ -256,16 +223,24 @@ nav ul {
     border-style: solid;
     border-color: black;
     border-width: 1px;
-    font-size: 5rem;
+    font-size: 4em;
     color: black;
     text-align: center;
-    width: 1em;
+    width: 100%;
+    height: 100%;
     caret-color: transparent;
 } 
 
+
+.guess-cell {
+    border-radius: 3px;
+    border-color: white;
+    border-style: solid;
+    border-width: 4px;
+}
+
 .selected {
     border-color: chartreuse;
-    border-width: 4px;
 }
 
 .no-match {
@@ -394,3 +369,51 @@ header, .sidebar, main, footer {
     padding: .8rem;
     background-color: white;
   }
+
+
+
+@media screen and (max-width: 900px) {
+    .guess-letter {
+        font-size: 3.7em;
+    } 
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        grid-template-areas:
+            "header"
+            "rules"
+            "main"
+            "leaders"
+            "footer";
+        grid-template-columns: 1fr;
+    }
+
+    #leaders{
+        flex-direction: column;
+        align-items: center;
+        align-content: center;
+
+    }
+
+    header {
+        flex-direction: column;
+    }
+
+    #header-main {
+        grid-template-columns: 1fr;
+    
+        grid-template-areas:
+            "logo"
+            "turtle"
+            "nav"
+            "form"
+        ;
+    }
+}
+
+@media screen and (max-width: 300px) {
+    .guess-letter {
+        font-size: 3.2em;
+    } 
+}

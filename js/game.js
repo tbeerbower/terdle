@@ -1,6 +1,6 @@
 // constants 
-const baseUrl = 'https://terdle-server.fly.dev'
-//const baseUrl = 'http://localhost:9000'
+//const baseUrl = 'https://terdle-server.fly.dev'
+const baseUrl = 'http://localhost:9000'
 const MAX_ROWS = 6;
 const NUMB_LETTERS = 5;
 
@@ -35,9 +35,15 @@ function handleDOMContentLoaded() {
 }
 
 function handleKeyDown(e) {
-    console.log(`key code is ${e.key}`);
-
+   
     if (game.isLoggedIn) {
+
+        selectGuess();
+
+        console.log(`key code is ${e.key}`);
+    
+        e.preventDefault();
+
         let key = e.key
 
         unselectGuess();
@@ -45,28 +51,54 @@ function handleKeyDown(e) {
             let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
             console.log(`guessId is ${guessId}`);
 
-        //    document.getElementById(guessId).textContent = key.toUpperCase();
             document.getElementById(guessId).value = key.toUpperCase();
             if (game.currentGuess.col < 4) {
+                
+                unselectGuess();
+
                 game.currentGuess.col++
+
+                
+                selectGuess();
+
             }
         } else if (key == "Backspace") {
             let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
             let guessElement = document.getElementById(guessId)
             guessElement.value = ''
             if (game.currentGuess.col > 0) {
+                
+                unselectGuess();
+
                 game.currentGuess.col--
+                  
+                selectGuess();
+
             }
         } else if (key == "ArrowLeft") {
             if (game.currentGuess.col > 0) {
+                
+                unselectGuess();
+
                 game.currentGuess.col--
+
+                
+                selectGuess();
+
             }
         } else if (key == "ArrowRight") {
             if (game.currentGuess.col < 4) {
                 let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
                 let guessElement = document.getElementById(guessId)
                 if (guessElement.value.match(/[a-zA-Z]/i)) {
+                    
+                    unselectGuess();
+
                     game.currentGuess.col++
+
+                    
+                    selectGuess();
+
                 }
             }
         } else if (key == "Enter") {
@@ -88,8 +120,15 @@ function handleKeyDown(e) {
                 updateGame(guess);
 
                 if (game.currentGuess.row < MAX_ROWS - 1) {
+                    
+                    unselectGuess();
+
                     game.currentGuess.row++
                     game.currentGuess.col = 0
+
+                    
+                    selectGuess();
+
                 }
             }
             console.log("Guess=" + guess);
@@ -111,8 +150,10 @@ function initGameBoard() {
 
 
         for (let c = 0; c < NUMB_LETTERS; c++) {
-           let columnElement = document.createElement('td');
-           rowElement.appendChild(columnElement);
+           let cellElement = document.createElement('td');
+           cellElement.classList.add('guess-cell');
+           rowElement.appendChild(cellElement);
+
 
            let guessElement = document.createElement('input');
 
@@ -121,13 +162,14 @@ function initGameBoard() {
            guessElement.id = guessId
            guessElement.classList.add('no-match')
            guessElement.classList.add('guess-letter')
-           //guessElement.innerHTML = '&nbsp'
+           guessElement.valu = ''
            guessElement.type = "text";
            guessElement.inputmode = "text";
            guessElement.maxLength = 1;
            guessElement.readOnly = true;
+           guessElement.onclick = "selectGuess()"
 
-           columnElement.appendChild(guessElement);
+           cellElement.appendChild(guessElement);
         }
         gameTableElement.appendChild(rowElement);
     }
@@ -252,7 +294,6 @@ function getGame() {
 }
 
 function fillInGameTable() {
-    unselectGuess();
     if (game.currentGame) {
         let matches = game.currentGame.matches;
 
@@ -265,7 +306,7 @@ function fillInGameTable() {
         
                     let guessId = `guess${i}${j}`
                     let guessElement = document.getElementById(guessId)
-                    guessElement.textContent = matches[i][j].char.toUpperCase()
+                    guessElement.value = matches[i][j].char.toUpperCase()
         
                     if (matches[i][j].match === "EXACT_MATCH") {
                         guessElement.classList.add("exact-match")
@@ -279,11 +320,15 @@ function fillInGameTable() {
                 }
             }
 
+            unselectGuess();
+        
             game.currentGuess.row = matches.length;
             if (game.currentGuess.row >= MAX_ROWS) {
                 game.currentGuess.row = MAX_ROWS - 1;
             }
             game.currentGuess.col = 0;
+
+            selectGuess();
 
             console.log(`fill in row ${game.currentGuess.row} col ${game.currentGuess.col}`)
         }
@@ -293,17 +338,23 @@ function fillInGameTable() {
     
                 let guessId = `guess${i}${j}`
                 let guessElement = document.getElementById(guessId)
-                guessElement.innerHTML = '&nbsp'
+                guessElement.value = ''
                 guessElement.classList.remove("exact-match")
                 guessElement.classList.remove("match")
                 guessElement.classList.add("no-match")
             }
         }
+        
+        unselectGuess();
+
         game.currentGuess.row = 0;
         game.currentGuess.col = 0;
 
+        
+        selectGuess();
+
+
     }  
-    selectGuess();
 }
 
 
@@ -313,14 +364,17 @@ function selectGuess() {
     console.log(`selecting guess${game.currentGuess.row}${game.currentGuess.col}`)
 
     let guessElement = document.getElementById(guessId)
-    guessElement.classList.add("selected") 
+    guessElement.parentElement.classList.add("selected") 
+    guessElement.readOnly = false;
     guessElement.focus();
 }
 
 function unselectGuess() {
     let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
     let guessElement = document.getElementById(guessId)
-    guessElement.classList.remove("selected") 
+    guessElement.parentElement.classList.remove("selected") 
+    guessElement.readOnly = true;
+
 }
 
 function login() {
