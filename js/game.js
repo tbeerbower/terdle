@@ -1,6 +1,6 @@
 // constants 
-const baseUrl = 'https://terdle-server.fly.dev'
-//const baseUrl = 'http://localhost:9000'
+//const baseUrl = 'https://terdle-server.fly.dev'
+const baseUrl = 'http://localhost:9000'
 const MAX_ROWS = 6;
 const NUMB_LETTERS = 5;
 
@@ -167,7 +167,7 @@ function initGameBoard() {
            guessElement.inputmode = "text";
            guessElement.maxLength = 1;
            guessElement.readOnly = true;
-           guessElement.onclick = "selectGuess()"
+           guessElement.onclick = "onClickGuess()"
 
            cellElement.appendChild(guessElement);
         }
@@ -357,6 +357,12 @@ function fillInGameTable() {
     }  
 }
 
+function onClickGuess(event) {
+    unselectGuess();
+
+    event.preventDefault();
+    selectGuess();
+}
 
 function selectGuess() {
     let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
