@@ -359,7 +359,6 @@ function fillInGameTable() {
 
 function onClickGuess(event) {
     unselectGuess();
-
     event.preventDefault();
     selectGuess();
 }
@@ -372,6 +371,7 @@ function selectGuess() {
     let guessElement = document.getElementById(guessId)
     guessElement.parentElement.classList.add("selected") 
     guessElement.readOnly = false;
+    guessElement.blur();
     guessElement.focus();
 }
 
@@ -380,7 +380,7 @@ function unselectGuess() {
     let guessElement = document.getElementById(guessId)
     guessElement.parentElement.classList.remove("selected") 
     guessElement.readOnly = true;
-
+    guessElement.blur();
 }
 
 function login() {
