@@ -40,8 +40,6 @@ function handleKeyDown(e) {
 
         selectGuess();
 
-        console.log(`key code is ${e.key}`);
-    
         e.preventDefault();
 
         let key = e.key
@@ -49,8 +47,6 @@ function handleKeyDown(e) {
         unselectGuess();
         if (key.length === 1 && key.match(/[a-zA-Z]/i)) {
             let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
-            console.log(`guessId is ${guessId}`);
-
             document.getElementById(guessId).value = key.toUpperCase();
             if (game.currentGuess.col < 4) {
                 
@@ -112,8 +108,6 @@ function handleKeyDown(e) {
                 if (!guessElement.value.match(/[a-zA-Z]/i)) {
                     complete = false
                 }
-
-            //  console.log(guessElement)
             }
             if (complete) {
 
@@ -131,15 +125,12 @@ function handleKeyDown(e) {
 
                 }
             }
-            console.log("Guess=" + guess);
         }
         selectGuess();
     }
 }
 
 function initGameBoard() {
-
-    console.log('initializing game board!');
 
     let gameTableElement = document.getElementById('game-table')
 
@@ -201,8 +192,6 @@ function startGame() {
         })
         .then(data => {
             // Handle successful game creation response
-            console.log('Game created successfully', data);
-
             // Set the current game ID
             localStorage.setItem('gameId',data.gameId);
             getGame();
@@ -288,10 +277,32 @@ function getGame() {
                         }
                         document.getElementById("main").style.filter = "blur(2px)";
                     }
-
                 }
             );
         }
+    }
+}
+
+function getUserGames() {
+    var user = JSON.parse(localStorage.getItem('user'));
+    if (user) {
+        var token = localStorage.getItem('token');
+        var userId = user.id;
+
+        callApi(`${baseUrl}/users/${userId}/games`, 
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            },
+            loading,
+            (data) => {
+                console.log(`user: ${user.id}`);
+                // TODO: display statistics from user games
+            }
+        );
     }
 }
 
@@ -299,9 +310,7 @@ function fillInGameTable() {
     if (game.currentGame) {
         let matches = game.currentGame.matches;
 
-        console.log(`matches = ${matches}`)
         if (matches) {
-
 
             for (let i = 0; i < matches.length; ++i) {
                 for (let j = 0; j < NUMB_LETTERS; ++j) {
@@ -331,8 +340,6 @@ function fillInGameTable() {
             game.currentGuess.col = 0;
 
             selectGuess();
-
-            console.log(`fill in row ${game.currentGuess.row} col ${game.currentGuess.col}`)
         }
     } else {
         for (let i = 0; i < MAX_ROWS; ++i) {
@@ -367,9 +374,6 @@ function onClickGuess(event) {
 
 function selectGuess() {
     let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
-
-    console.log(`selecting guess${game.currentGuess.row}${game.currentGuess.col}`)
-
     let guessElement = document.getElementById(guessId)
     guessElement.parentElement.classList.add("selected") 
     guessElement.readOnly = false;
