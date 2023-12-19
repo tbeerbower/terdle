@@ -22,7 +22,7 @@
             <div id="header-main">
                 <img src="images/terdle.png" id="logo" />
                 <img src="images/sea-turtle.png" id="turtle" />
-                
+
                 <nav id="site-nav">
                     <ul>
                         <li><a href="#">Statistics</a></li>
@@ -31,7 +31,7 @@
                         <li><a href="#">Register</a></li>
                     </ul>
                 </nav>
-    
+
                 <div id="login-form" class="login-form">
                     <input type="text" id="username" class="login login-input" placeholder="Username">
                     <input type="password" id="password" class="login login-input" placeholder="Password">
@@ -47,37 +47,39 @@
                     <a onclick="logout()">Logout</a>
                 </div>
             </div>
-           
+
         </header>
 
         <aside id="rules" class="sidebar">
             <h2>Rules</h2>
-            <img src="images/monkey.png" id="monkey"/>
+            <img src="images/monkey.png" id="monkey" />
 
             <ol id="rule-list">
                 <li><strong>Objective:</strong> Guess the secret five-letter word within six attempts.</li>
                 <li><strong>Guesses:</strong> You have six chances to guess the correct word.</li>
                 <li><strong>Feedback:</strong>
-                  <ul>
-                    <li>Correct letters in the correct position are highlighted green.</li>
-                    <li>Correct letters in the wrong position are highlighted yellow.</li>
-                    <li>Incorrect letters are not hightlighted.</li>
-                  </ul>
+                    <ul>
+                        <li>Correct letters in the correct position are highlighted green.</li>
+                        <li>Correct letters in the wrong position are highlighted yellow.</li>
+                        <li>Incorrect letters are not hightlighted.</li>
+                    </ul>
                 </li>
                 <li><strong>Word List:</strong> The secret word is chosen from a predetermined list.</li>
                 <li><strong>Word Length:</strong> The secret word is always five letters long.</li>
                 <li><strong>Letter Validity:</strong> Guesses must consist of valid five-letter English words.</li>
                 <li><strong>Winning:</strong> You win by correctly guessing the secret word within six attempts.</li>
                 <li><strong>Losing:</strong> If you don't guess the word within six attempts, you lose the game.</li>
-                <li><strong>Strategy:</strong> Use feedback from previous guesses to narrow down possibilities and make informed subsequent guesses.</li>
-                <li><strong>Replay:</strong> Players can play multiple rounds, trying to guess different secret words.</li>
+                <li><strong>Strategy:</strong> Use feedback from previous guesses to narrow down possibilities and make
+                    informed subsequent guesses.</li>
+                <li><strong>Replay:</strong> Players can play multiple rounds, trying to guess different secret words.
+                </li>
             </ol>
         </aside>
 
         <main>
             <div class="game">
                 <table id="game-table">
-                   <!-- generate table here -->
+                    <!-- generate table here -->
                 </table>
 
             </div>
@@ -85,7 +87,7 @@
 
         <aside id="leaders" class="sidebar">
             <h2>Leaderboard</h2>
-            <img src="images/leader.png" id="leader-cup"/>
+            <img src="images/leader.png" id="leader-cup" />
 
             <div>
                 <table id="leader-table">
@@ -95,43 +97,8 @@
                             <th>Avg. Guesses</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>amicoolyet</td>
-                            <td>3.45</td>
-                        </tr>
-                        <tr>
-                            <td>username_copied</td>
-                            <td>3.84</td>
-                        </tr>
-                        <tr>
-                            <td>jshout</td>
-                            <td>3.92</td>
-                        </tr>
-                        <tr>
-                            <td>gr8feet</td>
-                            <td>4.11</td>
-                        </tr>
-                        <tr>
-                            <td>brrrrr</td>
-                            <td>4.12</td>
-                        </tr>
-                        <tr>
-                            <td>uglee_duk</td>
-                            <td>4.16</td>
-                        </tr>
-                        <tr>
-                            <td>2gr82fly</td>
-                            <td>4.35</td>
-                        </tr>
-                        <tr>
-                            <td>bee_bauwa</td>
-                            <td>4.67</td>
-                        </tr>
-                        <tr>
-                            <td>snoopy_q</td>
-                            <td>5.22</td>
-                        </tr>
+                    <tbody id="leader-table-body">
+                        <!-- generate leader board here -->
                     </tbody>
                 </table>
             </div>

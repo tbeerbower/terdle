@@ -35,7 +35,7 @@ function handleDOMContentLoaded() {
 }
 
 function handleKeyDown(e) {
-   
+
     if (game.isLoggedIn) {
 
         selectGuess();
@@ -49,12 +49,12 @@ function handleKeyDown(e) {
             let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
             document.getElementById(guessId).value = key.toUpperCase();
             if (game.currentGuess.col < 4) {
-                
+
                 unselectGuess();
 
                 game.currentGuess.col++
 
-                
+
                 selectGuess();
 
             }
@@ -63,22 +63,22 @@ function handleKeyDown(e) {
             let guessElement = document.getElementById(guessId)
             guessElement.value = ''
             if (game.currentGuess.col > 0) {
-                
+
                 unselectGuess();
 
                 game.currentGuess.col--
-                  
+
                 selectGuess();
 
             }
         } else if (key == "ArrowLeft") {
             if (game.currentGuess.col > 0) {
-                
+
                 unselectGuess();
 
                 game.currentGuess.col--
 
-                
+
                 selectGuess();
 
             }
@@ -87,12 +87,12 @@ function handleKeyDown(e) {
                 let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
                 let guessElement = document.getElementById(guessId)
                 if (guessElement.value.match(/[a-zA-Z]/i)) {
-                    
+
                     unselectGuess();
 
                     game.currentGuess.col++
 
-                    
+
                     selectGuess();
 
                 }
@@ -114,13 +114,13 @@ function handleKeyDown(e) {
                 updateGame(guess);
 
                 if (game.currentGuess.row < MAX_ROWS - 1) {
-                    
+
                     unselectGuess();
 
                     game.currentGuess.row++
                     game.currentGuess.col = 0
 
-                    
+
                     selectGuess();
 
                 }
@@ -137,30 +137,30 @@ function initGameBoard() {
     for (let r = 0; r < MAX_ROWS; r++) {
 
         let rowElement = document.createElement('tr');
-     //   rowElement.classList.add('elementToFadeInAndOut')
+        //   rowElement.classList.add('elementToFadeInAndOut')
 
 
         for (let c = 0; c < NUMB_LETTERS; c++) {
-           let cellElement = document.createElement('td');
-           cellElement.classList.add('guess-cell');
-           rowElement.appendChild(cellElement);
+            let cellElement = document.createElement('td');
+            cellElement.classList.add('guess-cell');
+            rowElement.appendChild(cellElement);
 
 
-           let guessElement = document.createElement('input');
+            let guessElement = document.createElement('input');
 
-           let guessId = `guess${r}${c}`
+            let guessId = `guess${r}${c}`
 
-           guessElement.id = guessId
-           guessElement.classList.add('no-match')
-           guessElement.classList.add('guess-letter')
-           guessElement.valu = ''
-           guessElement.type = "text";
-           guessElement.inputmode = "text";
-           guessElement.maxLength = 1;
-           guessElement.readOnly = true;
-           guessElement.onclick = "onClickGuess()"
+            guessElement.id = guessId
+            guessElement.classList.add('no-match')
+            guessElement.classList.add('guess-letter')
+            guessElement.valu = ''
+            guessElement.type = "text";
+            guessElement.inputmode = "text";
+            guessElement.maxLength = 1;
+            guessElement.readOnly = true;
+            guessElement.onclick = "onClickGuess()"
 
-           cellElement.appendChild(guessElement);
+            cellElement.appendChild(guessElement);
         }
         gameTableElement.appendChild(rowElement);
     }
@@ -184,23 +184,23 @@ function startGame() {
             },
             body: JSON.stringify(gameData),
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Handle successful game creation response
-            // Set the current game ID
-            localStorage.setItem('gameId',data.gameId);
-            getGame();
-    
-        })
-        .catch(error => {
-            // Handle errors during game creation
-            console.error('There was a problem creating the game:', error.message);
-        }); 
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle successful game creation response
+                // Set the current game ID
+                localStorage.setItem('gameId', data.gameId);
+                getGame();
+
+            })
+            .catch(error => {
+                // Handle errors during game creation
+                console.error('There was a problem creating the game:', error.message);
+            });
 
     }
 }
@@ -223,7 +223,7 @@ function updateGame(guessValue) {
             guesses: previousGuesses
         };
 
-        callApi(`${baseUrl}/users/${userId}/games/${gameId}`, 
+        callApi(`${baseUrl}/users/${userId}/games/${gameId}`,
             {
                 method: 'PUT',
                 headers: {
@@ -234,10 +234,10 @@ function updateGame(guessValue) {
             },
             loading,
             () => {
-                  getGame();
+                getGame();
             },
             (error) => {
-                console.error('There was a problem:', error.message);    
+                console.error('There was a problem:', error.message);
                 getGame();
             }
         );
@@ -254,7 +254,7 @@ function getGame() {
 
         if (gameId) {
 
-            callApi(`${baseUrl}/users/${userId}/games/${gameId}`, 
+            callApi(`${baseUrl}/users/${userId}/games/${gameId}`,
                 {
                     method: 'GET',
                     headers: {
@@ -268,7 +268,7 @@ function getGame() {
                     console.log(`got current game ${game.currentGame.gameId}`)
                     fillInGameTable();
 
-                    if (game.currentGame.guesses.length >= MAX_ROWS || game.currentGame.success ) {
+                    if (game.currentGame.guesses.length >= MAX_ROWS || game.currentGame.success) {
                         document.getElementById("gameOver").style.display = "flex";
                         if (game.currentGame.success) {
                             document.getElementById("gameOverText").innerHTML = `You solved it in ${game.currentGame.guesses.length} tries!`;
@@ -289,7 +289,7 @@ function getUserGames() {
         var token = localStorage.getItem('token');
         var userId = user.id;
 
-        callApi(`${baseUrl}/users/${userId}/games`, 
+        callApi(`${baseUrl}/users/${userId}/games`,
             {
                 method: 'GET',
                 headers: {
@@ -314,17 +314,17 @@ function fillInGameTable() {
 
             for (let i = 0; i < matches.length; ++i) {
                 for (let j = 0; j < NUMB_LETTERS; ++j) {
-        
+
                     let guessId = `guess${i}${j}`
                     let guessElement = document.getElementById(guessId)
                     guessElement.value = matches[i][j].char.toUpperCase()
-        
+
                     if (matches[i][j].match === "EXACT_MATCH") {
                         guessElement.classList.add("exact-match")
-        
+
                     } else if (matches[i][j].match === "WRONG_LOCATION") {
                         guessElement.classList.add("match")
-        
+
                     } else {
                         guessElement.classList.add("no-match")
                     }
@@ -332,7 +332,7 @@ function fillInGameTable() {
             }
 
             unselectGuess();
-        
+
             game.currentGuess.row = matches.length;
             if (game.currentGuess.row >= MAX_ROWS) {
                 game.currentGuess.row = MAX_ROWS - 1;
@@ -344,7 +344,7 @@ function fillInGameTable() {
     } else {
         for (let i = 0; i < MAX_ROWS; ++i) {
             for (let j = 0; j < NUMB_LETTERS; ++j) {
-    
+
                 let guessId = `guess${i}${j}`
                 let guessElement = document.getElementById(guessId)
                 guessElement.value = ''
@@ -353,17 +353,17 @@ function fillInGameTable() {
                 guessElement.classList.add("no-match")
             }
         }
-        
+
         unselectGuess();
 
         game.currentGuess.row = 0;
         game.currentGuess.col = 0;
 
-        
+
         selectGuess();
 
 
-    }  
+    }
 }
 
 function onClickGuess(event) {
@@ -375,7 +375,7 @@ function onClickGuess(event) {
 function selectGuess() {
     let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
     let guessElement = document.getElementById(guessId)
-    guessElement.parentElement.classList.add("selected") 
+    guessElement.parentElement.classList.add("selected")
     guessElement.readOnly = false;
     guessElement.blur();
     guessElement.focus();
@@ -384,7 +384,7 @@ function selectGuess() {
 function unselectGuess() {
     let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
     let guessElement = document.getElementById(guessId)
-    guessElement.parentElement.classList.remove("selected") 
+    guessElement.parentElement.classList.remove("selected")
     guessElement.readOnly = true;
     guessElement.blur();
 }
@@ -402,7 +402,7 @@ function login() {
     document.getElementById("login-wait").style.display = "flex";
     document.getElementById("login-status").style.display = "none";
 
-    callApi( `${baseUrl}/login`, 
+    callApi(`${baseUrl}/login`,
         {
             method: 'POST',
             headers: {
@@ -416,7 +416,7 @@ function login() {
             const user = data.user;
 
             // Save the user ID and token to localStorage for later use
-            localStorage.setItem('user',JSON.stringify(user));
+            localStorage.setItem('user', JSON.stringify(user));
             localStorage.setItem('token', token);
 
             loggedIn(user);
@@ -439,7 +439,7 @@ function logout() {
     document.getElementById("login-status").style.display = "none";
     document.getElementById("logged-in-username").textContent = '';
     document.getElementById("username").textContent = '';
-    document.getElementById("password").textContent= '';
+    document.getElementById("password").textContent = '';
 
     localStorage.removeItem('user');
     localStorage.removeItem('token');
@@ -457,13 +457,61 @@ function endGame() {
 }
 
 function loading(isLoading) {
-    console.log(`LOADING: ${isLoading}` );
+    console.log(`LOADING: ${isLoading}`);
     if (isLoading) {
-        console.log('Display loading screen' );
+        console.log('Display loading screen');
     } else {
-        console.log('Display normal screen' );
+        console.log('Display normal screen');
     }
 }
+
+function displayLeaderboard() {
+    let leaderData = [
+        {
+            user: 'amicoolyet',
+            avg: 3.45
+        },
+        {
+            user: 'username_copied',
+            avg: 3.84
+        },
+        {
+            user: 'jshout',
+            avg: 3.92
+        },
+        {
+            user: 'gr8feet',
+            avg: 4.11
+        },
+        {
+            user: 'brrrrr',
+            avg: 4.12
+        },
+        {
+            user: 'uglee_duk',
+            avg: 4.16
+        },
+        {
+            user: '2gr82fly',
+            avg: 4.35
+        },
+        {
+            user: 'bee_bauwa',
+            avg: 4.67
+        },
+        {
+            user: 'snoopy_q',
+            avg: 5.22
+        }
+    ]
+
+
+
+}
+
+
+
+
 
 // Call the initializeGame function to start the application
 initializeGame();
