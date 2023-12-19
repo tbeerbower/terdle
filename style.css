@@ -181,7 +181,7 @@ footer {
 
 * {
     box-sizing: border-box;
-    font-family: Tahoma, Verdana, Segoe, sans-serif;
+    font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
 }
 
 nav ul {
@@ -355,7 +355,6 @@ header, .sidebar, main, footer {
     flex-direction: column;
     justify-content: center;
 
-
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
@@ -365,10 +364,26 @@ header, .sidebar, main, footer {
 
     z-index: 9;
 
-    width: 70%;
+    width: 40%;
     height: 20%;
     padding: .8rem;
     background-color: white;
+}
+
+#loading {
+    display: none;
+    position:relative;
+    height: 100%;
+    width:100%;
+}
+
+#loading img {
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
 }
 
 @media screen and (max-width: 768px) {

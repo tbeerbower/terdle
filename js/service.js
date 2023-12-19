@@ -1,4 +1,9 @@
-function callApi(url, requestInfo, handleData, handleError = logError) {
+function logError(error) {
+    console.error('There was a problem:', error.message);    
+}
+
+function callApi(url, requestInfo, loading, handleData, handleError = logError) {
+    loading(true);
     fetch(url, requestInfo)
     .then(response => {
         if (!response.ok) {
@@ -6,8 +11,12 @@ function callApi(url, requestInfo, handleData, handleError = logError) {
         }
         return response.json();
     })
-    .then(handleData)
+    .then( data => {
+        handleData(data);
+        loading(false);
+    })
     .catch(error => {
         handleError(error);
+        loading(false);
     });
 }

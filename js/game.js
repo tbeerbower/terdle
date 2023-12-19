@@ -243,6 +243,7 @@ function updateGame(guessValue) {
                 },
                 body: JSON.stringify(guessData),
             },
+            loading,
             () => {
                   getGame();
             },
@@ -272,6 +273,7 @@ function getGame() {
                         'Authorization': `Bearer ${token}`
                     }
                 },
+                loading,
                 (data) => {
                     game.currentGame = data;
                     console.log(`got current game ${game.currentGame.gameId}`)
@@ -404,6 +406,7 @@ function login() {
             },
             body: JSON.stringify(loginData),
         },
+        loading,
         (data) => {
             const token = data.token;
             const user = data.user;
@@ -449,10 +452,14 @@ function endGame() {
     startGame();
 }
 
-function logError(error) {
-    console.error('There was a problem:', error.message);    
+function loading(isLoading) {
+    console.log(`LOADING: ${isLoading}` );
+    if (isLoading) {
+        console.log('Display loading screen' );
+    } else {
+        console.log('Display normal screen' );
+    }
 }
-
 
 // Call the initializeGame function to start the application
 initializeGame();
