@@ -41,6 +41,19 @@ header {
     grid-area: form;
 }
 
+.register-form {
+    grid-area: form;
+}
+
+.register-status {
+    grid-area: form;
+}
+
+#register-wait {
+    grid-area: form;
+}
+
+
 
 #rules {
     grid-area: rules;
@@ -107,6 +120,36 @@ footer {
 }
 
 .login-button {
+    padding: 4px 4px;
+    margin: 2px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: .8rem;
+}
+
+
+.register-form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content:center;
+    margin-bottom: 2px;
+}
+
+.register-input {
+
+    width: 30%;
+    margin: 2px;
+    padding: 2px;
+    border: 1px solid black;
+    border-radius: 4px;
+    font-size: .8rem;
+}
+
+.register-button {
     padding: 4px 4px;
     margin: 2px;
     background-color: #4CAF50;

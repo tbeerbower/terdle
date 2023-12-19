@@ -28,7 +28,7 @@
                         <li><a href="#">Statistics</a></li>
                         <li><a href="#">Leaderboard</a></li>
                         <li><a href="#">About Us</a></li>
-                        <li><a href="#">Register</a></li>
+                        <li><a onclick="showRegister">Register</a></li>
                     </ul>
                 </nav>
     
@@ -37,6 +37,11 @@
                     <input type="password" id="password" class="login login-input" placeholder="Password">
                     <button type="button" class="login login-button" onclick="login()">Login</button>
 
+                </div>
+                <div id="register-form" class="register-form">
+                    <input type="text" id="r-username" class="register register-input" placeholder="Username">
+                    <input type="password" id="r-password" class="register register-input" placeholder="Password">
+                    <button type="button" class="login login-button" onclick="register()">Register</button>
                 </div>
                 <div id="login-wait">
                     <div id="logging-in"></div>

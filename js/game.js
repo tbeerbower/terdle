@@ -389,14 +389,40 @@ function login() {
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
 
+    document.getElementById("login-form").style.display = "none";
+    document.getElementById("register-form").style.display = "none";
+    document.getElementById("login-wait").style.display = "flex";
+    document.getElementById("login-status").style.display = "none";
+
+    doLogin(username, password);
+}
+
+function showRegister(event) {
+    document.getElementById("login-form").style.display = "none";
+    document.getElementById("register-form").style.display = "flex";
+    document.getElementById("login-wait").style.display = "none";
+    document.getElementById("login-status").style.display = "none";
+    event.preventDefault();
+}
+
+function register() {
+    logout();
+    const username = document.getElementById("r-username").value;
+    const password = document.getElementById("r-password").value;
+
+    document.getElementById("login-form").style.display = "none";
+    document.getElementById("register-form").style.display = "none";
+    document.getElementById("login-wait").style.display = "flex";
+    document.getElementById("login-status").style.display = "none";
+
+    doRegister(username, password);
+}
+
+function doLogin(username, password) {
     const loginData = {
         username: username,
         password: password
     };
-
-    document.getElementById("login-form").style.display = "none";
-    document.getElementById("login-wait").style.display = "flex";
-    document.getElementById("login-status").style.display = "none";
 
     callApi( `${baseUrl}/login`, 
         {
@@ -421,9 +447,43 @@ function login() {
     );
 }
 
+function doRegister(username, password) {
+    const loginData = {
+        username: username,
+        password: password,
+        confirmPassword: password,
+        role: 'USER_ROLE'
+    };
+
+    callApi( `${baseUrl}/register`, 
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(loginData),
+        },
+        loading,
+        (data) => {
+            const token = data.token;
+            const user = data.user;
+
+            // Save the user ID and token to localStorage for later use
+            localStorage.setItem('user',JSON.stringify(user));
+            localStorage.setItem('token', token);
+
+            doLogin(username, password);
+        }
+    );
+}
+
+
+
+
 function loggedIn(user) {
     game.isLoggedIn = true;
     document.getElementById("login-form").style.display = "none";
+    document.getElementById("register-form").style.display = "none";
     document.getElementById("login-wait").style.display = "none";
     document.getElementById("login-status").style.display = "flex";
     document.getElementById("logged-in-username").textContent = user.username;
@@ -431,6 +491,7 @@ function loggedIn(user) {
 
 function logout() {
     document.getElementById("login-form").style.display = "flex";
+    document.getElementById("register-form").style.display = "none";
     document.getElementById("login-wait").style.display = "none";
     document.getElementById("login-status").style.display = "none";
     document.getElementById("logged-in-username").textContent = '';
