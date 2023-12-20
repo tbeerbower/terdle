@@ -29,6 +29,7 @@ function getUserFromLocalStorage() {
 }
 
 function handleDOMContentLoaded() {
+    displayLeaderboard();
     initGameBoard();
     restoreUserSession();
     document.addEventListener('keydown', handleKeyDown);
@@ -505,6 +506,18 @@ function displayLeaderboard() {
         }
     ]
 
+
+    const tbody = document.getElementById('leader-table-body');
+    leaderData.forEach((leader)=>{
+        const row = document.createElement('tr');
+        tbody.appendChild(row);
+        const userData = document.createElement('td');
+        const avgData = document.createElement('td');
+        row.appendChild(userData);
+        row.appendChild(avgData);
+        userData.innerText = leader.user;
+        avgData.innerText = leader.avg;
+    })
 
 
 }
