@@ -2,14 +2,14 @@ function logError(error) {
     console.error('There was a problem:', error.message);    
 }
 
-function callApi(url, requestInfo, loading, handleData, handleError = logError) {
+function callApi(url, requestInfo, loading, handleResponse, handleData, handleError = logError) {
     loading(true);
     fetch(url, requestInfo)
-    .then(response => {
+    .then( response => {
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw Error(response.statusText);
         }
-        return response.json();
+        return handleResponse(response);
     })
     .then( data => {
         handleData(data);
