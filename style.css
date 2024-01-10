@@ -85,7 +85,6 @@ footer {
 }
 
 
-
 /***** enter grid and flexbox CSS above this line *****/
 
 .login-form {
@@ -218,18 +217,85 @@ nav ul {
     height: 1.5em;
 }
 
+#control {
+    margin-top: 1%;
+    margin-bottom: 1%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#control button {
+    margin: 2%;
+    box-shadow: 0 3px 4px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#control button:active {
+    background: #e5e5e5;
+    -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
+       -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+            box-shadow: inset 0px 0px 5px #c1c1c1;
+     outline: none;
+}
+
+.game {
+    display: flex;
+    flex-direction: column;
+    width: 95%;
+}
+
+#game-table {
+    width: 100%;
+}
+
 .guess-letter {
     border-radius: 2px;
     border-style: solid;
     border-color: black;
     border-width: 1px;
-    font-size: 5vw;
+    font-size: 4vw;
     color: black;
     text-align: center;
-    height: 12vh;
-    width: 6vw;
+    height: 8vw;
+    width: 20%;
 } 
 
+.guess-letter:active {
+    background: #e5e5e5;
+    -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
+       -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+            box-shadow: inset 0px 0px 5px #c1c1c1;
+     outline: none;
+}
+
+#keyboard {
+    width: 100%;
+    margin: 2%;
+}
+
+#keyboard button {
+    font-size: 1.4vw;
+    margin-top: 1%;
+    margin-right: 1%;
+    padding: 0px;
+}
+
+.keyboard-letter {
+    height: 3vw;
+    width: 3vw;
+}
+
+.keyboard-ctl {
+    height: 3vw;
+    width: 6vw;
+}
+
+.keyboard-row {
+    display: flex;
+    justify-content: center;
+}
 
 @keyframes shake {
     0% { -webkit-transform: translate(2px, 1px) rotate(0deg); } 
@@ -244,20 +310,12 @@ nav ul {
     90% { -webkit-transform: translate(2px, 2px) rotate(0deg); }
     100% { -webkit-transform: translate(1px, -2px) rotate(-1deg); }
 }
+
 .vibrate {
     animation-name: shake;
     animation-duration: 0.5s;
     transform-origin:50% 50%;
     animation-iteration-count: infinite;
-}
-
-
-
-
-
-.selected {
-    border-color: chartreuse;
-    background-color: lightgrey;
 }
 
 .no-match {
@@ -273,6 +331,10 @@ nav ul {
 .exact-match {
     color: white;
     background-color: #6ca965;
+}
+
+.selected {
+    background-color: lightgrey;
 }
 
 html {
@@ -403,9 +465,7 @@ header, .sidebar, main, footer {
 }
 
 @media screen and (max-width: 768px) {
-    .guess-letter {
-        font-size: 4em;
-    } 
+  
     .container {
         grid-template-areas:
             "header"
@@ -436,5 +496,27 @@ header, .sidebar, main, footer {
             "nav"
             "form"
         ;
+    }
+
+
+    .guess-letter {
+        font-size: 4em;
+        height: 16vw;
+    } 
+    
+    #keyboard button {
+        font-size: 2vw;
+    }
+
+    .keyboard-letter {
+        height: 7vw;
+        width: 7vw;
+
+    }
+    
+    .keyboard-ctl {
+        height: 7vw;
+        width: 14vw;
+
     }
 }
