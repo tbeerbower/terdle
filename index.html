@@ -11,6 +11,7 @@
 </head>
 
 <body>
+    <script src="js/words.js"></script>
     <script src="js/service.js"></script>
     <script src="js/game.js"></script>
 
@@ -77,11 +78,53 @@
         </aside>
 
         <main>
+
+            <div id="control">
+                <button id="random-game-button">New Game</button>
+                <button id="daily-game-button">Daily Game</button>
+            </div>
+
             <div class="game">
                 <table id="game-table">
                     <!-- generate table here -->
                 </table>
+            </div>
 
+            <div id="keyboard">
+                <div id="keyboard-row-1" class="keyboard-row">
+                    <button id="keyboard-q" class="keyboard-letter">Q</button>
+                    <button id="keyboard-w" class="keyboard-letter">W</button>
+                    <button id="keyboard-e" class="keyboard-letter">E</button>
+                    <button id="keyboard-r" class="keyboard-letter">R</button>
+                    <button id="keyboard-t" class="keyboard-letter">T</button>
+                    <button id="keyboard-y" class="keyboard-letter">Y</button>
+                    <button id="keyboard-u" class="keyboard-letter">U</button>
+                    <button id="keyboard-i" class="keyboard-letter">I</button>
+                    <button id="keyboard-o" class="keyboard-letter">O</button>
+                    <button id="keyboard-p" class="keyboard-letter">P</button>
+                </div>
+                <div id="keyboard-row-2" class="keyboard-row">
+                    <button id="keyboard-a" class="keyboard-letter">A</button>
+                    <button id="keyboard-s" class="keyboard-letter">S</button>
+                    <button id="keyboard-d" class="keyboard-letter">D</button>
+                    <button id="keyboard-f" class="keyboard-letter">F</button>
+                    <button id="keyboard-g" class="keyboard-letter">G</button>
+                    <button id="keyboard-h" class="keyboard-letter">H</button>
+                    <button id="keyboard-j" class="keyboard-letter">J</button>
+                    <button id="keyboard-k" class="keyboard-letter">K</button>
+                    <button id="keyboard-l" class="keyboard-letter">L</button>
+                </div>
+                <div id="keyboard-row-3" class="keyboard-row">
+                    <button id="keyboard-enter" class="keyboard-ctl">enter</button>
+                    <button id="keyboard-z" class="keyboard-letter">Z</button>
+                    <button id="keyboard-x" class="keyboard-letter">X</button>
+                    <button id="keyboard-c" class="keyboard-letter">C</button>
+                    <button id="keyboard-v" class="keyboard-letter">V</button>
+                    <button id="keyboard-b" class="keyboard-letter">B</button>
+                    <button id="keyboard-n" class="keyboard-letter">N</button>
+                    <button id="keyboard-m" class="keyboard-letter">M</button>
+                    <button id="keyboard-backspace" class="keyboard-ctl">back</button>
+                </div>
             </div>
         </main>
 

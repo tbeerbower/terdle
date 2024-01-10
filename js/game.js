@@ -20,12 +20,8 @@ function initializeGame() {
 }
 
 function restoreUserSession() {
-    // Extract repeated logic into functions
-    const user = getUserFromLocalStorage();
-    if (user) {
-        loggedIn(user);
-        getGame();
-    }
+    loggedIn(getUserFromLocalStorage());
+    getGame();
 }
 
 function getUserFromLocalStorage() {
@@ -36,12 +32,81 @@ function handleDOMContentLoaded() {
     displayLeaderboard();
     initGameBoard();
     restoreUserSession();
-    document.addEventListener('keydown', handleKeyDown);
+
+    let guessLetters = document.querySelectorAll('.guess-letter');
+    guessLetters.forEach((letter) => {
+        letter.addEventListener('keydown', handleKeyDown);
+    })
+
+    let keyboardButtons = document.querySelectorAll('.keyboard-letter');
+    keyboardButtons.forEach( (button) => {
+        button.addEventListener('click', handleKeyboardButtonClick);
+    })
+
+    let keyboardEnter = document.getElementById('keyboard-enter');
+    keyboardEnter.addEventListener('click', handleKeyboardEnterClick);
+
+    let keyboardBack = document.getElementById('keyboard-backspace');
+    keyboardBack.addEventListener('click', handleKeyboardBackClick);
+
+    let randomGameButton = document.getElementById('random-game-button');
+    randomGameButton.addEventListener('click', startGame);
+}
+
+function handleKeyboardButtonClick(e) {
+    console.log('handleKeyboardButtonClick');
+
+    if (game.currentGame && !game.isLoading && !inPopup) {
+        unselectGuess();
+        let key = e.target.innerText;
+        console.log(`PRESSED ${key}`);
+        let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
+        document.getElementById(guessId).innerText = key.toUpperCase();
+        if (game.currentGuess.col < 4) {
+            game.currentGuess.col++
+        }
+        selectGuess();
+    }
+}
+
+function handleKeyboardEnterClick() {
+    if (game.currentGame && !game.isLoading && !inPopup) {
+        unselectGuess();
+        let guess = ''
+        let complete = true;
+        for (let i = 0; i < NUMB_LETTERS; i++) {
+            let guessId = `guess${game.currentGuess.row}${i}`
+            let guessElement = document.getElementById(guessId)
+            guess = guess + guessElement.innerText
+
+            if (!guessElement.innerText.match(/[a-zA-Z]/i)) {
+                complete = false
+            }
+        }
+        if (complete) {
+            updateGame(guess);
+        }
+        selectGuess();
+    }
+}
+
+function handleKeyboardBackClick() {
+    if (game.currentGame && !game.isLoading && !inPopup) {
+        unselectGuess();
+        let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
+        document.getElementById(guessId).innerText = ' ';
+        if (game.currentGuess.col > 0) {
+            game.currentGuess.col--
+        }
+        selectGuess();
+    }
 }
 
 function handleKeyDown(e) {
 
-    if (game.isLoggedIn && !game.isLoading && !inPopup) {
+    console.log(`IN handleKeyDown: ${e.target}`)
+
+    if (game.currentGame && !game.isLoading && !inPopup) {
 
         selectGuess();
 
@@ -111,20 +176,7 @@ function handleKeyDown(e) {
                 }
             }
             if (complete) {
-
                 updateGame(guess);
-
-                if (game.currentGuess.row < MAX_ROWS - 1) {
-
-                    unselectGuess();
-
-                    game.currentGuess.row++
-                    game.currentGuess.col = 0
-
-
-                    selectGuess();
-
-                }
             }
         }
         selectGuess();
@@ -145,7 +197,8 @@ function initGameBoard() {
             let guessId = `guess${r}${c}`
 
             guessElement.id = guessId
-            guessElement.classList.add('no-match')
+            guessElement.tabIndex = 0;
+            //guessElement.classList.add('no-match')
             guessElement.classList.add('guess-letter')
             guessElement.innerText = ' '
             guessElement.onclick = "onClickGuess()"
@@ -157,6 +210,41 @@ function initGameBoard() {
 }
 
 function startGame() {
+
+    startGameLocal();
+    //startGameRemote();
+}
+
+function startGameLocal() {
+
+    const date = new Date();
+    const user = getUserFromLocalStorage();
+    const userId = user ? user.id : 0;
+
+    localStorage.setItem('gameId', 0);
+
+    game.currentGame = {
+        gameId: 0,
+        word: "happy",
+        date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+        type: "RANDOM",
+        userId: userId,
+        guesses: [],
+        success: false,
+        matches: []
+    };
+    localStorage.setItem('game', JSON.stringify(game.currentGame));
+
+    console.log('!!!start game=');
+    console.log(game);
+
+    fillInGameTable();
+
+    let randomGameButton = document.getElementById('random-game-button');
+    randomGameButton.innerText = 'Restart Game';
+}
+
+function startGameRemote() {
     var user = JSON.parse(localStorage.getItem('user'));
     if (user) {
         var token = localStorage.getItem('token');
@@ -174,27 +262,88 @@ function startGame() {
             },
             body: JSON.stringify(gameData),
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Handle successful game creation response
-            // Set the current game ID
-            localStorage.setItem('gameId', data.gameId);
-            getGame();
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle successful game creation response
+                // Set the current game ID
+                localStorage.setItem('gameId', data.gameId);
+                getGame();
 
-        })
-        .catch(error => {
-            // Handle errors during game creation
-            console.error('There was a problem creating the game:', error.message);
-        });
+            })
+            .catch(error => {
+                // Handle errors during game creation
+                console.error('There was a problem creating the game:', error.message);
+            });
     }
 }
 
 function updateGame(guessValue) {
+    updateGameLocal(guessValue);
+    // updateGameRemote(guessValue);
+}
+
+function updateGameLocal(guessValue) {
+    guessValue = guessValue.toLowerCase();
+
+    if (!TERDLE_GUESS_WORDS.includes(guessValue) && !TERDLE_WORDS.includes(guessValue)) {
+        showPopup(`${guessValue.toUpperCase()} is not a TErdle word!`);
+    } else {
+
+        console.log('!!!update game=');
+        console.log(game);
+
+
+        game.currentGame.guesses.push(guessValue.toLowerCase());
+        game.currentGame.matches = [];
+
+
+        // update matches
+        game.currentGame.guesses.forEach((guess) => {
+            let misses = [];
+            let matches = [];
+            for (let i = 0; i < guess.length; i++) {
+                let ch = game.currentGame.word[i];
+                if (ch === guess[i]) {
+                    matches[i] = {
+                        match: 'EXACT_MATCH',
+                        char: ch
+                    }
+                } else {
+                    misses.push(ch);
+                }
+            }
+            for (let i = 0; i < guess.length && misses.length > 0; i++) {
+                let ch = guess[i];
+                if (game.currentGame.word[i] !== ch) {
+                    var index = misses.indexOf(ch);
+                    if (index !== -1) {
+                        misses.splice(index, 1);
+                        matches[i] = {
+                            match: 'WRONG_LOCATION',
+                            char: ch
+                        };
+                    } else {
+                        matches[i] = {
+                            match: 'NO_MATCH',
+                            char: ch
+                        };
+                    }
+                }
+            }
+            game.currentGame.matches.push(matches);
+            game.currentGame.success = game.currentGame.guesses.includes(game.currentGame.word);
+        });
+        localStorage.setItem('game', JSON.stringify(game.currentGame));
+    }
+    getGame();
+}
+
+function updateGameRemote(guessValue) {
     var user = JSON.parse(localStorage.getItem('user'));
     if (user) {
         var token = localStorage.getItem('token');
@@ -239,6 +388,30 @@ function updateGame(guessValue) {
 
 
 function getGame(flipLastRow = false, error = false) {
+    getGameLocal(flipLastRow, error);
+    // getGameRemote(flipLastRow, error);
+
+}
+
+function getGameLocal(flipLastRow = false, error = false) {
+    game.currentGame = JSON.parse(localStorage.getItem('game'));
+
+    fillInGameTable();
+    if (game.currentGame != null) {
+
+        console.log('!!!get game');
+        console.log(game);
+
+        if (game.currentGame.guesses.length >= MAX_ROWS || game.currentGame.success) {
+            let popupMsg = game.currentGame.success ?
+                `You solved it in ${game.currentGame.guesses.length} tries!` :
+                `Sorry, you didn't win.<br>  The word is ${game.currentGame.word}.`;
+            showPopup(popupMsg, 'Play Again', endGame);
+        }
+    }
+}
+
+function getGameRemote(flipLastRow = false, error = false) {
     var user = JSON.parse(localStorage.getItem('user'));
     if (user) {
         var token = localStorage.getItem('token');
@@ -255,7 +428,7 @@ function getGame(flipLastRow = false, error = false) {
                         'Authorization': `Bearer ${token}`
                     }
                 },
-                loading,          
+                loading,
                 (response) => {
                     return response.json();
                 },
@@ -266,7 +439,7 @@ function getGame(flipLastRow = false, error = false) {
 
                     if (game.currentGame.guesses.length >= MAX_ROWS || game.currentGame.success) {
                         let popupMsg = game.currentGame.success ?
-                            `You solved it in ${game.currentGame.guesses.length} tries!` : 
+                            `You solved it in ${game.currentGame.guesses.length} tries!` :
                             `Sorry, you didn't win.<br>  The word is ${game.currentGame.word}.`;
                         showPopup(popupMsg, 'Play Again', endGame);
                     }
@@ -276,7 +449,7 @@ function getGame(flipLastRow = false, error = false) {
     }
 }
 
-function showPopup(message, buttonText = 'OK', action= closePopup) {
+function showPopup(message, buttonText = 'OK', action = closePopup) {
     document.getElementById("popupMsg").style.display = "flex";
     document.getElementById("popupBtn").style.display = buttonText;
     document.getElementById("popupMsgText").innerHTML = message;
@@ -290,6 +463,7 @@ function closePopup() {
     document.getElementById("main").style.filter = "none";
     popupAction = closePopup;
     inPopup = false;
+    selectGuess();
 }
 
 function getUserGames() {
@@ -319,7 +493,7 @@ function getUserGames() {
 }
 
 function fillInGameTable(flipLastRow = false, error = false) {
-    if (game.currentGame) {
+    if (game.currentGame && game.currentGame.guesses && game.currentGame.guesses.length > 0) {
         let matches = game.currentGame.matches;
 
         if (matches) {
@@ -332,15 +506,22 @@ function fillInGameTable(flipLastRow = false, error = false) {
                     let guessElement = document.getElementById(guessId)
                     guessElement.innerText = matches[i][j].char.toUpperCase()
 
+                    let keyId = `keyboard-${matches[i][j].char.toLowerCase()}`;
+                    let keyElement = document.getElementById(keyId)
+
                     if (matches[i][j].match === "EXACT_MATCH") {
                         guessElement.classList.add("exact-match")
+                        keyElement.classList.add("exact-match")
 
                     } else if (matches[i][j].match === "WRONG_LOCATION") {
                         guessElement.classList.add("match")
+                        keyElement.classList.add("match")
 
                     } else {
                         guessElement.classList.add("no-match")
+                        keyElement.classList.add("no-match")
                     }
+
                 }
             }
 
@@ -363,9 +544,16 @@ function fillInGameTable(flipLastRow = false, error = false) {
                 guessElement.innerText = ' '
                 guessElement.classList.remove("exact-match")
                 guessElement.classList.remove("match")
-                guessElement.classList.add("no-match")
+                guessElement.classList.remove("no-match")
             }
         }
+
+        let keyButtons = document.querySelectorAll('#keyboard button');
+        keyButtons.forEach((button) => {
+            button.classList.remove("exact-match")
+            button.classList.remove("match")
+            button.classList.remove("no-match")
+        });
 
         unselectGuess();
 
@@ -385,10 +573,11 @@ function onClickGuess(event) {
     selectGuess();
 }
 
-function selectGuess(error=false) {
+function selectGuess(error = false) {
     let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
     let guessElement = document.getElementById(guessId)
     guessElement.classList.add("selected")
+    guessElement.focus({ focusVisible: true, preventScroll: false });
     console.log(`Selected ${guessId} with error ${error}`)
 
     if (error) {
@@ -402,6 +591,7 @@ function selectGuess(error=false) {
 function unselectGuess() {
     let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
     let guessElement = document.getElementById(guessId)
+    guessElement.blur();
     guessElement.classList.remove("selected")
 }
 
@@ -431,47 +621,64 @@ function login() {
             return response.json();
         },
         (data) => {
+
+
+            console.log("LOGGED IN!!!");
+            console.log(data);
             const token = data.token;
             const user = data.user;
+            console.log(user);
 
             // Save the user ID and token to localStorage for later use
             localStorage.setItem('user', JSON.stringify(user));
             localStorage.setItem('token', token);
 
             loggedIn(user);
-            startGame();
         }
     );
 }
 
 function loggedIn(user) {
-    game.isLoggedIn = true;
-    document.getElementById("login-form").style.display = "none";
-    document.getElementById("login-wait").style.display = "none";
-    document.getElementById("login-status").style.display = "flex";
-    document.getElementById("logged-in-username").textContent = user.username;
+    let randomGameButton = document.getElementById('random-game-button');
+    let dailyGameButton = document.getElementById('daily-game-button');
+    if (user) {
+        game.isLoggedIn = true;
+        document.getElementById("login-form").style.display = "none";
+        document.getElementById("login-wait").style.display = "none";
+        document.getElementById("login-status").style.display = "flex";
+        document.getElementById("logged-in-username").textContent = user.username;
+
+        randomGameButton.style.display = 'inline-block';
+        dailyGameButton.style.display = 'inline-block';
+    } else {
+        document.getElementById("login-form").style.display = "flex";
+        document.getElementById("login-wait").style.display = "none";
+        document.getElementById("login-status").style.display = "none";
+        document.getElementById("logged-in-username").textContent = '';
+        document.getElementById("username").textContent = '';
+        document.getElementById("password").textContent = '';
+
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        localStorage.removeItem('game');
+        localStorage.removeItem('gameId');
+        game.isLoggedIn = false;
+        randomGameButton.style.display = 'inline-block';
+        dailyGameButton.style.display = 'none';
+    }
 }
 
 function logout() {
-    document.getElementById("login-form").style.display = "flex";
-    document.getElementById("login-wait").style.display = "none";
-    document.getElementById("login-status").style.display = "none";
-    document.getElementById("logged-in-username").textContent = '';
-    document.getElementById("username").textContent = '';
-    document.getElementById("password").textContent = '';
-
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    localStorage.removeItem('game');
-    game.isLoggedIn = false;
+    loggedIn(null);
 }
 
 function endGame() {
-   closePopup();
+    closePopup();
     game.currentGame = null
+    localStorage.removeItem('game');
     localStorage.removeItem('gameId');
-    fillInGameTable();
-    startGame();
+    let randomGameButton = document.getElementById('random-game-button');
+    randomGameButton.innerText = 'New Game';
 }
 
 function loading(isLoading) {
@@ -525,7 +732,7 @@ function displayLeaderboard() {
     ]
 
     const tbody = document.getElementById('leader-table-body');
-    leaderData.forEach((leader)=>{
+    leaderData.forEach((leader) => {
         const row = document.createElement('tr');
         tbody.appendChild(row);
         const userData = document.createElement('td');
