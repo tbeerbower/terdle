@@ -215,6 +215,11 @@ function startGame() {
     //startGameRemote();
 }
 
+function getRandomNumber(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+}
+
+  
 function startGameLocal() {
 
     const date = new Date();
@@ -223,9 +228,11 @@ function startGameLocal() {
 
     localStorage.setItem('gameId', 0);
 
+    let word = TERDLE_WORDS[getRandomNumber(TERDLE_WORDS.length)];
+
     game.currentGame = {
         gameId: 0,
-        word: "happy",
+        word: word,
         date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
         type: "RANDOM",
         userId: userId,
