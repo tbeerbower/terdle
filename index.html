@@ -17,139 +17,113 @@
 
     <div class="container" id="main">
         <header>
-            <div id="header-te-logo">
-                <img src="images/te.png" id="te-logo" />
-            </div>
             <div id="header-main">
-                <img src="images/terdle.png" id="logo" />
-                <img src="images/sea-turtle.png" id="turtle" />
+                <img src="images/TE-banner.png" id="logo" />
+
+                <div id="login-status" class="login-status">
+                    <img src="images/user-login-icon.png" class="logged-in" id="logged-in-icon" />
+                    <div id="logged-in-username"></div>
+                    <a onclick="logout()">Logout</a>
+                </div>
+
+                <h1 id="title">TErdle</h1>
 
                 <nav id="site-nav">
                     <ul>
                         <li><a href="#">Statistics</a></li>
                         <li><a href="#">Leaderboard</a></li>
                         <li><a href="#">About Us</a></li>
-                        <li><a href="#">Register</a></li>
                     </ul>
                 </nav>
 
-                <div id="login-form" class="login-form">
-                    <input type="text" id="username" class="login login-input" placeholder="Username">
-                    <input type="password" id="password" class="login login-input" placeholder="Password">
-                    <button type="button" class="login login-button" onclick="login()">Login</button>
-
-                </div>
-                <div id="login-wait">
-                    <div id="logging-in"></div>
-                </div>
-                <div id="login-status" class="login-status">
-                    <img src="images/user-login-icon.png" class="logged-in" id="logged-in-icon" />
-                    <div id="logged-in-username"></div>
-                    <a onclick="logout()">Logout</a>
-                </div>
+       
             </div>
 
         </header>
 
-        <aside id="rules" class="sidebar">
-            <h2>Rules</h2>
-            <img src="images/monkey.png" id="monkey" />
-
-            <ol id="rule-list">
-                <li><strong>Objective:</strong> Guess the secret five-letter word within six attempts.</li>
-                <li><strong>Guesses:</strong> You have six chances to guess the correct word.</li>
-                <li><strong>Feedback:</strong>
-                    <ul>
-                        <li>Correct letters in the correct position are highlighted green.</li>
-                        <li>Correct letters in the wrong position are highlighted yellow.</li>
-                        <li>Incorrect letters are not hightlighted.</li>
-                    </ul>
-                </li>
-                <li><strong>Word List:</strong> The secret word is chosen from a predetermined list.</li>
-                <li><strong>Word Length:</strong> The secret word is always five letters long.</li>
-                <li><strong>Letter Validity:</strong> Guesses must consist of valid five-letter English words.</li>
-                <li><strong>Winning:</strong> You win by correctly guessing the secret word within six attempts.</li>
-                <li><strong>Losing:</strong> If you don't guess the word within six attempts, you lose the game.</li>
-                <li><strong>Strategy:</strong> Use feedback from previous guesses to narrow down possibilities and make
-                    informed subsequent guesses.</li>
-                <li><strong>Replay:</strong> Players can play multiple rounds, trying to guess different secret words.
-                </li>
-            </ol>
-        </aside>
 
         <main>
 
-            <div id="control">
-                <button id="random-game-button">New Game</button>
-                <button id="daily-game-button">Daily Game</button>
+            <div id="home" >
+
+                <img src="images/TErdleLogo.png" id="home-turtle" />
+
+                <span id="home-title">Get 6 chances to guess a 5-letter word.</span>
+
+
+
+                <div id="home-buttons">
+                    <button id="how-to-button">How to play</button>
+                    <button id="random-game-button">New Game</button>
+                    <button id="daily-game-button">Daily Game</button>
+                </div>
+
+                <div id="login">
+                    <div id="login-form" class="login-form">
+                        <input type="text" id="username" class="login login-input" placeholder="Username">
+                        <input type="password" id="password" class="login login-input" placeholder="Password">
+                        <button type="button" class="login login-button" onclick="login()">Login</button>
+                        <button type="button" class="login register-button" >Register</button>
+                    </div>
+                    <div id="login-wait">
+                        <div id="logging-in"></div>
+                    </div>
+                
+                </div>
             </div>
 
-            <div class="game">
-                <table id="game-table">
-                    <!-- generate table here -->
-                </table>
-            </div>
+            <div id="game-board">
 
-            <div id="keyboard">
-                <div id="keyboard-row-1" class="keyboard-row">
-                    <button id="keyboard-q" class="keyboard-letter">Q</button>
-                    <button id="keyboard-w" class="keyboard-letter">W</button>
-                    <button id="keyboard-e" class="keyboard-letter">E</button>
-                    <button id="keyboard-r" class="keyboard-letter">R</button>
-                    <button id="keyboard-t" class="keyboard-letter">T</button>
-                    <button id="keyboard-y" class="keyboard-letter">Y</button>
-                    <button id="keyboard-u" class="keyboard-letter">U</button>
-                    <button id="keyboard-i" class="keyboard-letter">I</button>
-                    <button id="keyboard-o" class="keyboard-letter">O</button>
-                    <button id="keyboard-p" class="keyboard-letter">P</button>
+                <div class="game">
+                    <div id="game-table">
+                        <!-- generate table here -->
+                    </div>
                 </div>
-                <div id="keyboard-row-2" class="keyboard-row">
-                    <button id="keyboard-a" class="keyboard-letter">A</button>
-                    <button id="keyboard-s" class="keyboard-letter">S</button>
-                    <button id="keyboard-d" class="keyboard-letter">D</button>
-                    <button id="keyboard-f" class="keyboard-letter">F</button>
-                    <button id="keyboard-g" class="keyboard-letter">G</button>
-                    <button id="keyboard-h" class="keyboard-letter">H</button>
-                    <button id="keyboard-j" class="keyboard-letter">J</button>
-                    <button id="keyboard-k" class="keyboard-letter">K</button>
-                    <button id="keyboard-l" class="keyboard-letter">L</button>
-                </div>
-                <div id="keyboard-row-3" class="keyboard-row">
-                    <button id="keyboard-enter" class="keyboard-ctl">enter</button>
-                    <button id="keyboard-z" class="keyboard-letter">Z</button>
-                    <button id="keyboard-x" class="keyboard-letter">X</button>
-                    <button id="keyboard-c" class="keyboard-letter">C</button>
-                    <button id="keyboard-v" class="keyboard-letter">V</button>
-                    <button id="keyboard-b" class="keyboard-letter">B</button>
-                    <button id="keyboard-n" class="keyboard-letter">N</button>
-                    <button id="keyboard-m" class="keyboard-letter">M</button>
-                    <button id="keyboard-backspace" class="keyboard-ctl">back</button>
+
+                <div id="keyboard" class="base">
+                    <div id="keyboard-row-1" class="keyboard-row">
+                        <span id="keyboard-q" class="keyboard-letter">Q</span> 
+                        <span id="keyboard-w" class="keyboard-letter">W</span>
+                        <span id="keyboard-e" class="keyboard-letter">E</span>
+                        <span id="keyboard-r" class="keyboard-letter">R</span>
+                        <span id="keyboard-t" class="keyboard-letter">T</span>
+                        <span id="keyboard-y" class="keyboard-letter">Y</span>
+                        <span id="keyboard-u" class="keyboard-letter">U</span>
+                        <span id="keyboard-i" class="keyboard-letter">I</span>
+                        <span id="keyboard-o" class="keyboard-letter">O</span>
+                        <span id="keyboard-p" class="keyboard-letter">P</span>
+                    </div>
+                    <div id="keyboard-row-2" class="keyboard-row">
+                        <span id="keyboard-a" class="keyboard-letter">A</span>
+                        <span id="keyboard-s" class="keyboard-letter">S</span>
+                        <span id="keyboard-d" class="keyboard-letter">D</span>
+                        <span id="keyboard-f" class="keyboard-letter">F</span>
+                        <span id="keyboard-g" class="keyboard-letter">G</span>
+                        <span id="keyboard-h" class="keyboard-letter">H</span>
+                        <span id="keyboard-j" class="keyboard-letter">J</span>
+                        <span id="keyboard-k" class="keyboard-letter">K</span>
+                        <span id="keyboard-l" class="keyboard-letter">L</span>
+                    </div>
+                    <div id="keyboard-row-3" class="keyboard-row">
+                        <span id="keyboard-enter" class="keyboard-ctl">enter</span>
+                        <span id="keyboard-z" class="keyboard-letter">Z</span>
+                        <span id="keyboard-x" class="keyboard-letter">X</span>
+                        <span id="keyboard-c" class="keyboard-letter">C</span>
+                        <span id="keyboard-v" class="keyboard-letter">V</span>
+                        <span id="keyboard-b" class="keyboard-letter">B</span>
+                        <span id="keyboard-n" class="keyboard-letter">N</span>
+                        <span id="keyboard-m" class="keyboard-letter">M</span>
+                        <span id="keyboard-backspace" class="keyboard-ctl">back</span>
+                    </div>
                 </div>
             </div>
         </main>
 
-        <aside id="leaders" class="sidebar">
-            <h2>Leaderboard</h2>
-            <img src="images/leader.png" id="leader-cup" />
 
-            <div>
-                <table id="leader-table">
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Avg. Guesses</th>
-                        </tr>
-                    </thead>
-                    <tbody id="leader-table-body">
-                        <!-- generate leader board here -->
-                    </tbody>
-                </table>
-            </div>
-        </aside>
 
         <footer>
             &copy; TechElevator TErdle
-            <img src="images/wordle-icon.png" id="footer-logo" />
+            <img src="images/TErdleLogo.png" id="footer-logo" />
         </footer>
     </div>
     <div class="popup-message" id="popupMsg">

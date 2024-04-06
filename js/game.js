@@ -29,17 +29,14 @@ function getUserFromLocalStorage() {
 }
 
 function handleDOMContentLoaded() {
-    displayLeaderboard();
+    //displayLeaderboard();
     initGameBoard();
     restoreUserSession();
 
-    let guessLetters = document.querySelectorAll('.guess-letter');
-    guessLetters.forEach((letter) => {
-        letter.addEventListener('keydown', handleKeyDown);
-    })
+    document.addEventListener('keydown', handleKeyDown);
 
     let keyboardButtons = document.querySelectorAll('.keyboard-letter');
-    keyboardButtons.forEach( (button) => {
+    keyboardButtons.forEach((button) => {
         button.addEventListener('click', handleKeyboardButtonClick);
     })
 
@@ -57,7 +54,6 @@ function handleKeyboardButtonClick(e) {
     console.log('handleKeyboardButtonClick');
 
     if (game.currentGame && !game.isLoading && !inPopup) {
-        unselectGuess();
         let key = e.target.innerText;
         console.log(`PRESSED ${key}`);
         let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
@@ -65,13 +61,11 @@ function handleKeyboardButtonClick(e) {
         if (game.currentGuess.col < 4) {
             game.currentGuess.col++
         }
-        selectGuess();
     }
 }
 
 function handleKeyboardEnterClick() {
     if (game.currentGame && !game.isLoading && !inPopup) {
-        unselectGuess();
         let guess = ''
         let complete = true;
         for (let i = 0; i < NUMB_LETTERS; i++) {
@@ -86,19 +80,16 @@ function handleKeyboardEnterClick() {
         if (complete) {
             updateGame(guess);
         }
-        selectGuess();
     }
 }
 
 function handleKeyboardBackClick() {
     if (game.currentGame && !game.isLoading && !inPopup) {
-        unselectGuess();
         let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
-        document.getElementById(guessId).innerText = ' ';
+        document.getElementById(guessId).innerHTML = '&nbsp';
         if (game.currentGuess.col > 0) {
             game.currentGuess.col--
         }
-        selectGuess();
     }
 }
 
@@ -108,61 +99,34 @@ function handleKeyDown(e) {
 
     if (game.currentGame && !game.isLoading && !inPopup) {
 
-        selectGuess();
 
-        e.preventDefault();
+        // e.preventDefault();
 
         let key = e.key
 
-        unselectGuess();
         if (key.length === 1 && key.match(/[a-zA-Z]/i)) {
-            let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
-            document.getElementById(guessId).innerText = key.toUpperCase();
-            if (game.currentGuess.col < 4) {
-                unselectGuess();
+            if (game.currentGuess.col < NUMB_LETTERS) {
+                let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
+                let guessElement = document.getElementById(guessId);
+
+                guessElement.innerText = key.toUpperCase();
+                guessElement.classList.add("selected")
                 game.currentGuess.col++
-                selectGuess();
 
             }
         } else if (key == "Backspace") {
+            if (game.currentGuess.col > 0) {
+
+
+                game.currentGuess.col--
+
+
+            }
             let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
             let guessElement = document.getElementById(guessId)
-            guessElement.innerText = ' '
-            if (game.currentGuess.col > 0) {
+            guessElement.innerHTML = '&nbsp'
+            guessElement.classList.remove("selected")
 
-                unselectGuess();
-
-                game.currentGuess.col--
-
-                selectGuess();
-
-            }
-        } else if (key == "ArrowLeft") {
-            if (game.currentGuess.col > 0) {
-
-                unselectGuess();
-
-                game.currentGuess.col--
-
-
-                selectGuess();
-
-            }
-        } else if (key == "ArrowRight") {
-            if (game.currentGuess.col < 4) {
-                let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
-                let guessElement = document.getElementById(guessId)
-                if (guessElement.innerText.match(/[a-zA-Z]/i)) {
-
-                    unselectGuess();
-
-                    game.currentGuess.col++
-
-
-                    selectGuess();
-
-                }
-            }
         } else if (key == "Enter") {
             let guess = ''
             let complete = true;
@@ -179,7 +143,6 @@ function handleKeyDown(e) {
                 updateGame(guess);
             }
         }
-        selectGuess();
     }
 }
 
@@ -189,10 +152,11 @@ function initGameBoard() {
 
     for (let r = 0; r < MAX_ROWS; r++) {
 
-        let rowElement = document.createElement('tr');
+        let rowElement = document.createElement('div');
+        rowElement.classList.add('game-row')
 
         for (let c = 0; c < NUMB_LETTERS; c++) {
-            let guessElement = document.createElement('td');
+            let guessElement = document.createElement('span');
 
             let guessId = `guess${r}${c}`
 
@@ -200,8 +164,7 @@ function initGameBoard() {
             guessElement.tabIndex = 0;
             //guessElement.classList.add('no-match')
             guessElement.classList.add('guess-letter')
-            guessElement.innerText = ' '
-            guessElement.onclick = "onClickGuess()"
+            guessElement.innerHTML = '&nbsp'
 
             rowElement.appendChild(guessElement);
         }
@@ -219,7 +182,7 @@ function getRandomNumber(max) {
     return Math.floor(Math.random() * Math.floor(max));
 }
 
-  
+
 function startGameLocal() {
 
     const date = new Date();
@@ -246,6 +209,12 @@ function startGameLocal() {
     console.log(game);
 
     fillInGameTable();
+
+    let gameBoard = document.getElementById('game-board');
+    gameBoard.style.display = "flex";
+
+    let control = document.getElementById('home');
+    control.style.display = "none";
 
     let randomGameButton = document.getElementById('random-game-button');
     randomGameButton.innerText = 'Restart Game';
@@ -299,6 +268,19 @@ function updateGameLocal(guessValue) {
 
     if (!TERDLE_GUESS_WORDS.includes(guessValue) && !TERDLE_WORDS.includes(guessValue)) {
         showPopup(`${guessValue.toUpperCase()} is not a TErdle word!`);
+
+        let row = game.currentGuess.row;
+
+        for (let col = 0; col < NUMB_LETTERS; ++col) {
+                let guessId = `guess${row}${col}`
+                let guessElement = document.getElementById(guessId)
+                guessElement.innerHTML = '&nbsp'
+                guessElement.classList.remove("exact-match")
+                guessElement.classList.remove("match")
+                guessElement.classList.remove("no-match")
+                guessElement.classList.remove("selected")
+        }
+
     } else {
 
         console.log('!!!update game=');
@@ -470,7 +452,6 @@ function closePopup() {
     document.getElementById("main").style.filter = "none";
     popupAction = closePopup;
     inPopup = false;
-    selectGuess();
 }
 
 function getUserGames() {
@@ -532,7 +513,6 @@ function fillInGameTable(flipLastRow = false, error = false) {
                 }
             }
 
-            unselectGuess();
 
             game.currentGuess.row = matches.length;
             if (game.currentGuess.row >= MAX_ROWS) {
@@ -540,7 +520,6 @@ function fillInGameTable(flipLastRow = false, error = false) {
             }
             game.currentGuess.col = 0;
 
-            selectGuess(error);
         }
     } else {
         for (let i = 0; i < MAX_ROWS; ++i) {
@@ -548,58 +527,23 @@ function fillInGameTable(flipLastRow = false, error = false) {
 
                 let guessId = `guess${i}${j}`
                 let guessElement = document.getElementById(guessId)
-                guessElement.innerText = ' '
+                guessElement.innerHTML = '&nbsp'
                 guessElement.classList.remove("exact-match")
                 guessElement.classList.remove("match")
                 guessElement.classList.remove("no-match")
+                guessElement.classList.remove("selected")
             }
         }
 
-        let keyButtons = document.querySelectorAll('#keyboard button');
+        let keyButtons = document.querySelectorAll('.keyboard-letter');
         keyButtons.forEach((button) => {
             button.classList.remove("exact-match")
             button.classList.remove("match")
             button.classList.remove("no-match")
         });
-
-        unselectGuess();
-
         game.currentGuess.row = 0;
         game.currentGuess.col = 0;
-
-
-        selectGuess();
-
-
     }
-}
-
-function onClickGuess(event) {
-    unselectGuess();
-    event.preventDefault();
-    selectGuess();
-}
-
-function selectGuess(error = false) {
-    let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
-    let guessElement = document.getElementById(guessId)
-    guessElement.classList.add("selected")
-    guessElement.focus({ focusVisible: true, preventScroll: false });
-    console.log(`Selected ${guessId} with error ${error}`)
-
-    if (error) {
-        guessElement.parentElement.classList.add("vibrate");
-        setInterval(() => {
-            guessElement.parentElement.classList.remove("vibrate");
-        }, 1000)
-    }
-}
-
-function unselectGuess() {
-    let guessId = `guess${game.currentGuess.row}${game.currentGuess.col}`
-    let guessElement = document.getElementById(guessId)
-    guessElement.blur();
-    guessElement.classList.remove("selected")
 }
 
 function login() {
@@ -686,6 +630,13 @@ function endGame() {
     localStorage.removeItem('gameId');
     let randomGameButton = document.getElementById('random-game-button');
     randomGameButton.innerText = 'New Game';
+    let gameBoard = document.getElementById('game-board');
+    gameBoard.style.display = "none";
+
+
+    let control = document.getElementById('control');
+    control.style.display = "flex";
+
 }
 
 function loading(isLoading) {

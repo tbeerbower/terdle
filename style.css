@@ -8,12 +8,11 @@ header {
     flex-grow: 1;
     display: grid;
     justify-items: center;
-    grid-template-columns: 5fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
 
     grid-template-areas:
-        "logo turtle"
-        "nav  turtle"
-        "form turtle"
+        "logo  logo  logo"
+        "login title nav"
     ;
 }
 
@@ -21,24 +20,20 @@ header {
     grid-area: logo;
 }
 
-#turtle {
-    grid-area: turtle;
-}
-
 #site-nav {
     grid-area: nav;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
 }
 
-.login-form {
-    grid-area: form;
-}
-
-.login-status {
-    grid-area: form;
-}
-
-#login-wait {
-    grid-area: form;
+#title {
+    grid-area: title;
+    font-family:"roboto serif";
+    font-weight: 800;
+    font-size: 48px;
+    margin: 0;
 }
 
 
@@ -53,10 +48,19 @@ header {
 
 main {
     grid-area: main;
+    overflow: auto;
     display: flex;
 	flex-wrap: wrap;
+    flex-direction: column;
 	justify-content: center;
 	align-content: center;
+}
+
+#game-board {
+    display: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 500px;
 }
 
 #leaders {
@@ -74,12 +78,14 @@ footer {
 }
 
 .container {
+    height: 100vh;
     display: grid;
-    grid-template-columns: 2fr 2fr 1fr;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
     grid-template-areas:
-        "header header header"
-        "rules main leaders"
-        "footer footer footer"
+        "header"
+        "main"
+        "footer"
     ;
     gap: 5px;
 }
@@ -105,17 +111,6 @@ footer {
     font-size: .8rem;
 }
 
-.login-button {
-    padding: 4px 4px;
-    margin: 2px;
-    background-color: #4CAF50;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: .8rem;
-}
-
 #login-wait {
     display: none;
     align-items: center;
@@ -138,10 +133,11 @@ footer {
 
 
 .login-status {
+    grid-area: login;
     display: none;
-    align-items: center;
-    margin-top: .2em;
-    margin-bottom: .4em;
+    width: 100%;
+    justify-content: center;
+    align-items:center;
     font-size: .9rem;
 }
 
@@ -188,12 +184,29 @@ nav ul {
 }
 
 #logo {
-    width: 15em;
+    width: 95vw;
+    max-width: 800px;
     padding-top: 5px;
 }
 
-#turtle {
-    width: 6em;
+#home-turtle {
+    grid-area: turtle;
+    width: 16em;
+}
+
+#home-title {
+    grid-area: home-title;
+    font-family:"roboto serif";
+    font-weight: 800;
+    font-size: 38px;
+}
+
+#home-buttons {
+    grid-area: buttons;
+}
+
+#login {
+    grid-area: login;
 }
 
 #te-logo {
@@ -217,85 +230,167 @@ nav ul {
     height: 1.5em;
 }
 
-#control {
-    margin-top: 1%;
-    margin-bottom: 1%;
-    display: flex;
-    justify-content: space-evenly;
+#home {
+    display: grid;
+    justify-items: center;
+    grid-template-columns: 1fr;
+    grid-template-rows: 2fr 1fr 1fr 1fr;
+    grid-template-areas:
+        "turtle"
+        "home-title"
+        "buttons"
+        "login"
+    ;
+    height: 80%;
 }
 
-#control button {
-    margin: 2%;
-    box-shadow: 0 3px 4px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    cursor: pointer;
+
+
+#home button {
+  font-size: 16px;
+  font-weight: 200;
+  letter-spacing: 1px;
+  padding: 13px 20px 13px;
+  outline: 0;
+  border: 1px solid black;
+  cursor: pointer;
+  position: relative;
+  background-color: rgba(0, 0, 0, 0);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  margin-right: 15px;
 }
 
-#control button:active {
-    background: #e5e5e5;
-    -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
-       -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
-            box-shadow: inset 0px 0px 5px #c1c1c1;
-     outline: none;
+#home button:after {
+  content: "";
+  background-color: lightseagreen;
+  width: 100%;
+  z-index: -1;
+  position: absolute;
+  height: 100%;
+  top: 7px;
+  left: 7px;
+  transition: 0.2s;
 }
+
+#home button:hover:after {
+  top: 0px;
+  left: 0px;
+}
+
+@media (min-width: 768px) {
+  #home button {
+    padding: 13px 50px 13px;
+  }
+}
+
+
+
+
 
 .game {
     display: flex;
-    flex-direction: column;
-    width: 95%;
+    justify-content: center;
+    width: 100%;
 }
 
 #game-table {
+    border-radius: 5px;
+    background: #F0FFFF;
+    display: flex;
     width: 100%;
-}
-
-.guess-letter {
-    border-radius: 2px;
-    border-style: solid;
-    border-color: black;
-    border-width: 1px;
-    font-size: 4vw;
-    color: black;
-    text-align: center;
-    height: 8vw;
-    width: 20%;
-} 
-
-.guess-letter:active {
-    background: #e5e5e5;
-    -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
-       -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
-            box-shadow: inset 0px 0px 5px #c1c1c1;
-     outline: none;
-}
-
-#keyboard {
-    width: 100%;
-    margin: 2%;
-}
-
-#keyboard button {
-    font-size: 1.4vw;
-    margin-top: 1%;
-    margin-right: 1%;
-    padding: 0px;
-}
-
-.keyboard-letter {
-    height: 3vw;
-    width: 3vw;
-}
-
-.keyboard-ctl {
-    height: 3vw;
-    width: 6vw;
-}
-
-.keyboard-row {
+    height: auto;
+    flex-direction: column;
+    padding: 10px 5px;
+    font: 28px arial;
+    box-shadow: 0px 40px 45px rgba(0, 0, 0, .4);
+  }
+  
+  .game-row {
     display: flex;
     justify-content: center;
-}
+    padding: 0 10px;
+  }
+  
+  .game-row + .game-row {
+    margin-top: 5px;
+  }
+  
+  .guess-letter {
+    box-shadow: 0px 3px 3px rgba(0, 0, 0, .7);
+    color: black;
+    padding: 10px;
+    background: #FFF8DC;
+    border-radius: 4px;
+    text-shadow: 0px 0px 40px #71D4FE, 0px 0px 80px #71D4FE;
+    width: 2em;
+    text-align: center;
+    border: 2px solid grey;
+    margin-left: 2px;
+    margin-right: 2px;
+  }
+
+  .guess-letter:focus{
+    outline: none;
+  }
+
+  #keyboard {
+    border-radius: 5px;
+    background: #F0FFFF;
+    display: flex;
+    width: 100%;
+    height: auto;
+    flex-direction: column;
+    padding: 10px 5px;
+    font: 28px arial;
+    box-shadow: 0px 40px 45px rgba(0, 0, 0, .4);
+    margin-bottom: 10px;
+  }
+  
+  .keyboard-row {
+    display: flex;
+    justify-content: space-around;
+  }
+  
+  .keyboard-row + .keyboard-row {
+    margin-top: 15px;
+  }
+  
+  #keyboard-row-1,
+  #keyboard-row-3 {
+    padding: 0 5px;
+  }
+  
+  #keyboard-row-2 {
+    padding: 0 10px;
+  }
+  
+  .keyboard-letter,.keyboard-ctl {
+    box-shadow: 0px 3px 3px rgba(0, 0, 0, .7);
+    color: black;
+    padding: 5px;
+    background: #FFF8DC;
+    border-radius: 4px;
+    text-shadow: 0px 0px 40px #71D4FE, 0px 0px 80px #71D4FE;
+    width: 1.4em;
+    text-align: center;
+  }
+  
+  .keyboard-row span:hover {
+    /*   box-shadow: 0px 2px 10px #040404;*/
+    background: #FFEBCD;
+    cursor: pointer
+  }
+  
+  #keyboard-row-3 span:first-of-type {
+    width: 2.7em;
+  }
+  
+  #keyboard-row-3 span:last-of-type {
+    width: 2.5em;
+  }
+  
 
 @keyframes shake {
     0% { -webkit-transform: translate(2px, 1px) rotate(0deg); } 
@@ -334,7 +429,7 @@ nav ul {
 }
 
 .selected {
-    background-color: lightgrey;
+    border: 2px solid black;
 }
 
 html {
@@ -466,15 +561,6 @@ header, .sidebar, main, footer {
 
 @media screen and (max-width: 768px) {
   
-    .container {
-        grid-template-areas:
-            "header"
-            "rules"
-            "main"
-            "leaders"
-            "footer";
-        grid-template-columns: 1fr;
-    }
 
     #leaders{
         flex-direction: column;
@@ -492,31 +578,38 @@ header, .sidebar, main, footer {
     
         grid-template-areas:
             "logo"
-            "turtle"
+            "title"
             "nav"
-            "form"
+            "login"
         ;
     }
 
-
-    .guess-letter {
-        font-size: 4em;
-        height: 16vw;
-    } 
-    
-    #keyboard button {
-        font-size: 2vw;
+    #game-board {
+        width: 400px;
     }
 
-    .keyboard-letter {
-        height: 7vw;
-        width: 7vw;
+    #game-table {
+        font: 24px arial;
+      }
 
-    }
-    
-    .keyboard-ctl {
-        height: 7vw;
-        width: 14vw;
+      #keyboard {
+        font: 24px arial;
+      }
 
+}
+
+@media screen and (max-width: 500px) {
+  
+
+    #game-board {
+        width: 300px;
     }
+
+    #game-table {
+        font: 20px arial;
+      }
+
+      #keyboard {
+        font: 20px arial;
+      }
 }
